@@ -214,7 +214,7 @@ data[0].contract.getPriceEpochConfiguration().then( (data:any) => {
 
 for(let p of data) {
     p = p as DataProviderData;
-
+    
     p.contract.on("PriceSubmitted", async (submitter: string, epochId: any) => {
         if(submitter != account.address) return;
         
@@ -240,4 +240,8 @@ for(let p of data) {
             }
         }
     });
+    
+    p.contract.on("PriceFinalized", (epochId: BigNumber, price: BigNumber, rewardedFtso: boolean, lowRewardPrice: BigNumber, highRewardPrice: BigNumber, finalizationType: number, timestamp: BigNumber) => {
+        logger.info(`Price finalized for ${ epochId.toString() }: ${ price.toNumber() }, type: ${finalizationType}, rewarded: ${rewardedFtso}, low: ${lowRewardPrice}, high: ${highRewardPrice}, timestamp: ${timestamp.toString()}`);
+    })
 }
