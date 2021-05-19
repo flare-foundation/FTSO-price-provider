@@ -9,13 +9,14 @@ In order to run the flare provider with the wanted price provider one must prepa
 {
     "accountPrivateKey": <PRIVATE KEY OF YOUR ACCOUNTY>,
     "rpcUrl": <RPC URL OF THE NODE CONNTECTED TO FLARE NETWORK>,
+    "priceSubmitterContractAddress": <ADDRESS OF THE PriceSubmitter SMART CONTRACT>,
+    "submitOffset": 80000,
+    "revealOffset": 2000,
     "priceProviderList": [
         {
             "pair": "XRP/USD",
             "decimals": 5,
             "contractAddress": <ADDRESS OF THE FtsoFxrp SMART CONTRACT>,
-            "submitOffset": 80000,
-            "revealOffset": 2000,
             "priceProviderClass": "RandomPriceProvider",
             "priceProviderParams": ["XRP/USD"]
         },
@@ -23,8 +24,6 @@ In order to run the flare provider with the wanted price provider one must prepa
             "pair": "XDG/USD",
             "decimals": 5,
             "contractAddress": <ADDRESS OF THE FtsoFxdg SMART CONTRACT>,
-            "submitOffset": 100000,
-            "revealOffset": 4000,
             "priceProviderClass": "RandomPriceProvider",
             "priceProviderParams": ["XDG/USD"]
         }
@@ -40,12 +39,13 @@ Explanation of params in configuration file
 ```
 accountPrivateKey: Private key of your account
 rpcUrl: RPC url of the node connected to flare network
+priceSubmitterContractAddress: Address of the PriceSubmitter contract on the Flare network
+submitOffset: Tells us how much after start of submit period, we submit the prices (in milliseconds)
+revealOffset: Tells us how much after start of reveal period, we reveal the prices (in milliseconds)
 priceProviderList: List of price provider data
     pair: Crypto currency pair for which price will be submitted
     decimals: Number of decimals (default: 5)
     contractAddress: Address of the contract on Flare network (e.g. for XPR/USD, we need addres of FtsoFxrp smart contract)
-    submitOffset: Tells us how much after start of submit period, we submit the price (in milliseconds)
-    revealOffset: Tells us how much after start of reveal period, we reveal the price (in milliseconds)
     priceProviderClass: Name of the class as defined in PriceProviderImpl.ts (must implement IPriceProvider interface)
     priceProviderParams: Array of parameters that are passed to constructor of 'priceProviderClass'
 ```

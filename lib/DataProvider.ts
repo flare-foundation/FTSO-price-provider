@@ -22,21 +22,26 @@ let args = yargs
 
 let conf:DataProviderConfiguration = JSON.parse( fs.readFileSync( args['config'] ).toString() ) as DataProviderConfiguration;
 
-const ABI_PATH = "./data/abi.json";
-const abi = getAbi(ABI_PATH);
+const FTSO_ABI_PATH = "./data/ftso_abi.json";
+const ftsoAbi = getAbi(FTSO_ABI_PATH);
+
+const PRICE_SUBMITTER_ABI_PATH = "./data/pricesubmitter_abi.json";
+const priceSubmitterAbi = getAbi(PRICE_SUBMITTER_ABI_PATH);
+
 const provider = getProvider(conf.rpcUrl);
 const web3 = getWeb3(conf.rpcUrl) as Web3;
 const account = getWeb3Wallet(web3, conf.accountPrivateKey);
+
+const priceSubmitterContract = getContract( provider, conf.priceSubmitterContractAddress, priceSubmitterAbi );
+const priceSubmitterWeb3Contract = getWeb3Contract( web3, conf.priceSubmitterContractAddress, priceSubmitterAbi );
 
 const data:DataProviderData[] = conf.priceProviderList.map( (ppc, index) => {
     return {
         index: index,
         pair: ppc.pair,
         decimals: ppc.decimals,
-        contract: getContract( provider, ppc.contractAddress, abi ),
-        web3contract: getWeb3Contract( web3, ppc.contractAddress, abi ),
-        submitOffset: ppc.submitOffset,
-        revealOffset: ppc.revealOffset,
+        contract: getContract( provider, ppc.contractAddress, ftsoAbi ),
+        web3contract: getWeb3Contract( web3, ppc.contractAddress, ftsoAbi ),
         priceProvider: new (impl as any)[ppc.priceProviderClass]( ...ppc.priceProviderParams ),
         label: ppc.priceProviderClass + "(" + ppc.pair + ")" 
     } as DataProviderData;
@@ -79,28 +84,33 @@ function preparePrice(price: number, decimals:number) {
     return Math.floor(price * 10**decimals);
 };
 
-async function signAndFinalize3(p:DataProviderData, fnToEncode:any):Promise<boolean> {
+function beforeSendSignedTransactionCallback() {
+    // TODO
+}
+
+async function signAndFinalize3(label:string, toAddress:string, fnToEncode:any, gas:string="400000"):Promise<boolean> {
     let nonce = await getNonce();
     var tx = {
         from: account.address,
-        to: p.web3contract.options.address,
-        gas: "400000",
+        to: toAddress,
+        gas: gas,
         gasPrice: "225000000000",
         data: fnToEncode.encodeABI(),
         nonce: nonce
     };
     var signedTx = await account.signTransaction(tx);
     try {
+        beforeSendSignedTransactionCallback();
         await waitFinalize3(account.address, () => web3.eth.sendSignedTransaction(signedTx.rawTransaction!));
         return true;
     } catch(e) {
         if( e.message.indexOf("Transaction has been reverted by the EVM") < 0 ) {
-            logger.error(`${p.label} | Nonce sent: ${ nonce } | signAndFinalize3 error: ${ e.message }`);
+            logger.error(`${label} | Nonce sent: ${ nonce } | signAndFinalize3 error: ${ e.message }`);
         } else {      
             fnToEncode.call({ from: account.address })
                 .then((result: any) => { throw Error('unlikely to happen: ' + JSON.stringify(result)) })
                 .catch((revertReason: any) => {
-                    logger.error(`${p.label} | Nonce sent: ${ nonce } | signAndFinalize3 error: ${ revertReason }`);
+                    logger.error(`${label} | Nonce sent: ${ nonce } | signAndFinalize3 error: ${ revertReason }`);
                     resetNonce();
                 });
         }
@@ -108,37 +118,61 @@ async function signAndFinalize3(p:DataProviderData, fnToEncode:any):Promise<bool
     }
 }
     
-async function submitPrice(p:DataProviderData) {
-    let epochId = ((await p.web3contract.methods.getCurrentEpochId().call()) as BigNumber).toString();
-    let price = await p.priceProvider.getPrice();
-    if (price) {
-        let preparedPrice = preparePrice(price, p.decimals);
-        let random = await getRandom();
-        let hash = submitPriceHash(preparedPrice, random);
-        logger.info(`${p.label} | Submitting price: ${ (preparedPrice/10**p.decimals).toFixed(p.decimals) } $ for ${ epochId }`);
-        index2epochId2priceInfo.get(p.index)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
-    
-        var fnToEncode = p.web3contract.methods.submitPrice(hash);
-        await signAndFinalize3(p, fnToEncode);
+async function submitPrices(lst:DataProviderData[]) {
+    let epochId = epochSettings.getCurrentEpochId().toString();
+
+    let hashes = [];
+    let addresses = [];
+    for(let p of lst) {
+        p = p as DataProviderData;
+
+        let price = await p.priceProvider.getPrice();
+        if (price) {
+            let preparedPrice = preparePrice(price, p.decimals);
+            let random = await getRandom();
+            let hash = submitPriceHash(preparedPrice, random);
+            hashes.push( hash );
+            addresses.push( p.web3contract.options.address );
+            logger.info(`${p.label} | Submitting price: ${ (preparedPrice/10**p.decimals).toFixed(p.decimals) } $ for ${ epochId }`);
+            index2epochId2priceInfo.get(p.index)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
+        }
+    }
+
+    if(hashes.length > 0) {
+        var fnToEncode = priceSubmitterWeb3Contract.methods.submitPrices(addresses, hashes);
+        await signAndFinalize3("Submit prices", priceSubmitterWeb3Contract.options.address, fnToEncode);
     }
 }
 
-async function revealPrice(p:DataProviderData, epochId: BigNumber): Promise<void> {
+async function revealPrices(lst:DataProviderData[], epochId: BigNumber): Promise<void> {
     const epochIdStr: string = epochId.toString();
     while(epochId2endRevealTime.get(epochIdStr) && new Date().getTime() < epochId2endRevealTime.get(epochIdStr)!) {
-        let priceInfo = index2epochId2priceInfo.get(p.index)!.get(epochIdStr);
-    
-        if(priceInfo) {
-            logger.info(`${p.label} | Revealing price for ${ epochIdStr }`);
-            priceInfo.moveToNextStatus();
-            let startTime = new Date().getTime();
-            var fnToEncode = p.web3contract.methods.revealPrice(epochIdStr, priceInfo.priceSubmitted, priceInfo.random);
-            let success:boolean = await signAndFinalize3(p, fnToEncode);
+
+        let addresses = [];
+        let prices = [];
+        let randoms = [];
+
+        for(let p of lst) {
+            p = p as DataProviderData;
+
+            let priceInfo = index2epochId2priceInfo.get(p.index)!.get(epochIdStr);
+        
+            if(priceInfo) {
+                logger.info(`${p.label} | Revealing price for ${ epochIdStr }`);
+                priceInfo.moveToNextStatus();
+
+                addresses.push( p.web3contract.options.address );
+                prices.push( priceInfo.priceSubmitted );
+                randoms.push( priceInfo.random );
+            }
+        }
+
+        if(prices.length > 0) {
+            var fnToEncode = priceSubmitterWeb3Contract.methods.revealPrices(epochIdStr, addresses, prices, randoms);
+            let success:boolean = await signAndFinalize3("Reveal prices", priceSubmitterWeb3Contract.options.address, fnToEncode, (prices.length * 300000)+"");
             
-            if(success) logger.info(`${p.label} | Reveal finished for ${ epochIdStr } in ${ new Date().getTime() - startTime }ms`);
+            // if(success) logger.info(`Reveal prices finished for ${ epochIdStr }`);
             break;
-        } else {
-            logger.info(`${p.label} | No price to reveal in ${ epochIdStr } in yet. Trying again in 1s...`);
         }
 
         await new Promise((resolve: any) => { setTimeout(() => { resolve() }, 1000) });
@@ -186,29 +220,24 @@ async function setupSubmissionAndReveal() {
     setTimeout(function() {
         logger.info(`REVEAL ENDED FOR: ${ epochId }`);
     }, epochRevealTimeEnd - new Date().getTime());
-
     
-    for(let p of data) {
-        p = p as DataProviderData;
-        if(diffSubmit > submitPeriod - p.submitOffset) {
-            setTimeout(function() {
-                execute(async function() { await submitPrice(p); });
-            }, diffSubmit - submitPeriod + p.submitOffset);
+    if(diffSubmit > submitPeriod - conf.submitOffset) {
+        setTimeout(function() {
+            execute(async function() { await submitPrices(data); });
+        }, diffSubmit - submitPeriod + conf.submitOffset);
     
-            setTimeout(function() {
-                execute(async function() { await revealPrice(p, epochId); });
-            }, diffSubmit + p.revealOffset);
-        }
+        setTimeout(function() {
+            execute(async function() { await revealPrices(data, epochId); });
+        }, diffSubmit + conf.revealOffset);
     }
 
-    setTimeout(setupSubmissionAndReveal, diffSubmit + 100);
+    setTimeout(setupSubmissionAndReveal, diffSubmit);
 }
 
-// data[0].web3contract.methods.getPriceEpochConfiguration().call().then( (data:any) => {
-data[0].contract.getPriceEpochConfiguration().then( (data:any) => {
+data[0].web3contract.methods.getPriceEpochConfiguration().call().then( (data:any) => {
     epochSettings = new EpochSettings( bigNumberToMillis(data[0]), bigNumberToMillis(data[1]), bigNumberToMillis(data[2]) );
     setupSubmissionAndReveal();
-})//.catch((err:any) => logger.error(err));
+}).catch((err:any) => logger.error(`getPriceEpochConfiguration | ${ err }`));
 
 // EVENTS
 

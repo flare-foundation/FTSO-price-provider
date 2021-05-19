@@ -97,8 +97,8 @@ export function getLogger(label:string|undefined=undefined) {
     });
 }
 
-export function bigNumberToMillis(num:any) {
-    return (num as BigNumber).mul(BigNumber.from(1000));
+export function bigNumberToMillis(num:number) {
+    return BigNumber.from( num * 1000 );
 }
 
 export function submitPriceHash(price: number | BN | BigNumber, random: number | BN | BigNumber): string {
