@@ -25,6 +25,9 @@ let conf:DataProviderConfiguration = JSON.parse( fs.readFileSync( args['config']
 const FTSO_ABI_PATH = "./data/ftso_abi.json";
 const ftsoAbi = getAbi(FTSO_ABI_PATH);
 
+const FTSO_MANAGER_ABI_PATH = "./data/ftsomanager_abi.json";
+const ftsoManagerAbi = getAbi(FTSO_MANAGER_ABI_PATH);
+
 const PRICE_SUBMITTER_ABI_PATH = "./data/pricesubmitter_abi.json";
 const priceSubmitterAbi = getAbi(PRICE_SUBMITTER_ABI_PATH);
 
@@ -32,33 +35,40 @@ const provider = getProvider(conf.rpcUrl);
 const web3 = getWeb3(conf.rpcUrl) as Web3;
 const account = getWeb3Wallet(web3, conf.accountPrivateKey);
 
-const priceSubmitterContract = getContract( provider, conf.priceSubmitterContractAddress, priceSubmitterAbi );
-const priceSubmitterWeb3Contract = getWeb3Contract( web3, conf.priceSubmitterContractAddress, priceSubmitterAbi );
+const ftsoManagerWeb3Contract = getWeb3Contract( web3, conf.ftsoManagerContractAddress, ftsoManagerAbi );
+
+let ftsosCount:number;
+let priceSubmitterContract: ethers.Contract;
+let priceSubmitterWeb3Contract:any;
+let ftso2symbol:Map<string,string> = new Map();
+let symbol2ftso:Map<string,string> = new Map();
+let symbol2dpd:Map<string, DataProviderData> = new Map();
 
 const data:DataProviderData[] = conf.priceProviderList.map( (ppc, index) => {
-    return {
+    let dpd = {
         index: index,
-        pair: ppc.pair,
+        symbol: ppc.symbol,
         decimals: ppc.decimals,
-        contract: getContract( provider, ppc.contractAddress, ftsoAbi ),
-        web3contract: getWeb3Contract( web3, ppc.contractAddress, ftsoAbi ),
         priceProvider: new (impl as any)[ppc.priceProviderClass]( ...ppc.priceProviderParams ),
-        label: ppc.priceProviderClass + "(" + ppc.pair + ")" 
+        label: ppc.priceProviderClass + "(" + ppc.symbol + "/USD)" 
     } as DataProviderData;
+    symbol2dpd.set(ppc.symbol, dpd);
+    return dpd;
 });
 
 if(data.length == 0) {
     throw Error("No price providers in configuration!");
 }
 
+
 const waitFinalize3 = waitFinalize3Factory(web3);
 const logger = getLogger();
 
 let epochSettings:EpochSettings;
 let nonce:number|undefined;     // if undefined, we retrieve it from blockchain, otherwise we use it
-let index2epochId2priceInfo: Map<number, Map<string, PriceInfo>> = new Map();
+let symbol2epochId2priceInfo: Map<string, Map<string, PriceInfo>> = new Map();
 data.forEach( (d) => {
-    index2epochId2priceInfo.set(d.index, new Map());
+    symbol2epochId2priceInfo.set(d.symbol, new Map());
 });
 let epochId2endRevealTime: Map<string, number> = new Map();
 let functionsToExecute: any[] = [];
@@ -117,6 +127,10 @@ async function signAndFinalize3(label:string, toAddress:string, fnToEncode:any, 
         return false;
     }
 }
+
+function supportedSymbols() {
+    return Array.from(symbol2ftso.keys()).join(", ");
+}
     
 async function submitPrices(lst:DataProviderData[]) {
     let epochId = epochSettings.getCurrentEpochId().toString();
@@ -125,6 +139,10 @@ async function submitPrices(lst:DataProviderData[]) {
     let addresses = [];
     for(let p of lst) {
         p = p as DataProviderData;
+        if(!symbol2ftso.get(p.symbol)) {
+            logger.info(`Skipping submit of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${ supportedSymbols() }.`);
+            continue;
+        }
 
         let price = await p.priceProvider.getPrice();
         if (price) {
@@ -132,9 +150,9 @@ async function submitPrices(lst:DataProviderData[]) {
             let random = await getRandom();
             let hash = submitPriceHash(preparedPrice, random);
             hashes.push( hash );
-            addresses.push( p.web3contract.options.address );
+            addresses.push( symbol2ftso.get(p.symbol) );
             logger.info(`${p.label} | Submitting price: ${ (preparedPrice/10**p.decimals).toFixed(p.decimals) } $ for ${ epochId }`);
-            index2epochId2priceInfo.get(p.index)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
+            symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
         }
     }
 
@@ -154,14 +172,18 @@ async function revealPrices(lst:DataProviderData[], epochId: BigNumber): Promise
 
         for(let p of lst) {
             p = p as DataProviderData;
+            if(!symbol2ftso.get(p.symbol)) {
+                logger.info(`Skipping reveal of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${ supportedSymbols() }.`);
+                continue;
+            }
 
-            let priceInfo = index2epochId2priceInfo.get(p.index)!.get(epochIdStr);
+            let priceInfo = symbol2epochId2priceInfo.get(p.symbol)!.get(epochIdStr);
         
             if(priceInfo) {
                 logger.info(`${p.label} | Revealing price for ${ epochIdStr }`);
                 priceInfo.moveToNextStatus();
 
-                addresses.push( p.web3contract.options.address );
+                addresses.push( symbol2ftso.get(p.symbol) );
                 prices.push( priceInfo.priceSubmitted );
                 randoms.push( priceInfo.random );
             }
@@ -221,7 +243,7 @@ async function setupSubmissionAndReveal() {
         logger.info(`REVEAL ENDED FOR: ${ epochId }`);
     }, epochRevealTimeEnd - new Date().getTime());
     
-    if(diffSubmit > submitPeriod - conf.submitOffset) {
+    if(diffSubmit > submitPeriod - conf.submitOffset && ftso2symbol.size >= ftsosCount) {
         setTimeout(function() {
             execute(async function() { await submitPrices(data); });
         }, diffSubmit - submitPeriod + conf.submitOffset);
@@ -234,43 +256,71 @@ async function setupSubmissionAndReveal() {
     setTimeout(setupSubmissionAndReveal, diffSubmit);
 }
 
-data[0].web3contract.methods.getPriceEpochConfiguration().call().then( (data:any) => {
-    epochSettings = new EpochSettings( bigNumberToMillis(data[0]), bigNumberToMillis(data[1]), bigNumberToMillis(data[2]) );
-    setupSubmissionAndReveal();
-}).catch((err:any) => logger.error(`getPriceEpochConfiguration | ${ err }`));
-
-// EVENTS
-
-for(let p of data) {
-    p = p as DataProviderData;
-    
-    p.contract.on("PriceSubmitted", async (submitter: string, epochId: any) => {
+function setupEvents() {
+    priceSubmitterContract.on("PricesSubmitted", async (submitter:string, epochId:any, ftsos:string[], hashes:string[], success:boolean[], timestamp:any) => {
         if(submitter != account.address) return;
-        
+
         let epochIdStr = epochId.toString();
-        let priceInfo = index2epochId2priceInfo.get(p.index)!.get(epochIdStr);
-        priceInfo?.moveToNextStatus();
-        logger.info(`${p.label} | Price submitted in epoch ${ epochIdStr }`);
-    });
-    
-    
-    p.contract.on("PriceRevealed", (voter: string, epochId: any, price: number, votePowerFlr: any, votePowerAsset: any) => {
-        if(voter != account.address) return;
-        
-        let epochIdStr = epochId.toString();
-        logger.info(`${p.label} | Price revealed in epoch ${ epochIdStr }: ${(price/10**p.decimals).toFixed(p.decimals)}$`);
-        
-        let priceInfo = index2epochId2priceInfo.get(p.index)!.get(epochIdStr)!;
-        if(priceInfo) {
-            priceInfo.moveToNextStatus();
-            logger.info(`${p.label} | Price that was submitted: ${ (priceInfo.priceSubmitted/10**5).toFixed(5) }$`);
-            if (priceInfo.priceSubmitted != (price as number)) {
-                logger.error(`${p.label} | Price submitted and price revealed are diffent!`);
-            }
+        for(let ftso of ftsos) {
+            let symbol = ftso2symbol.get(ftso)!;
+            let p:DataProviderData = symbol2dpd.get(symbol)!;
+            let priceInfo = symbol2epochId2priceInfo.get(symbol)!.get(epochIdStr);
+            priceInfo?.moveToNextStatus();
+            logger.info(`${p.label} | Price submitted in epoch ${ epochIdStr }`);
         }
     });
-    
-    p.contract.on("PriceFinalized", (epochId: BigNumber, price: BigNumber, rewardedFtso: boolean, lowRewardPrice: BigNumber, highRewardPrice: BigNumber, finalizationType: number, timestamp: BigNumber) => {
-        logger.info(`Price finalized for ${ epochId.toString() }: ${ price.toNumber() }, type: ${finalizationType}, rewarded: ${rewardedFtso}, low: ${lowRewardPrice}, high: ${highRewardPrice}, timestamp: ${timestamp.toString()}`);
-    })
+
+    priceSubmitterContract.on("PricesRevealed", async (voter:string, epochId:any, ftsos:string[], prices:any[], randoms:string[], success:boolean[], timestamp:any) => {
+        if(voter != account.address) return;
+
+        let epochIdStr = epochId.toString();
+        let i = 0;
+        for(let ftso of ftsos) {
+            let symbol = ftso2symbol.get(ftso)!;
+            let p:DataProviderData = symbol2dpd.get(symbol)!;
+            let price = prices[i];
+            
+            logger.info(`${p.label} | Price revealed in epoch ${ epochIdStr }: ${(price/10**p.decimals).toFixed(p.decimals)}$`);
+            
+            let priceInfo = symbol2epochId2priceInfo.get(symbol)!.get(epochIdStr);
+            if(priceInfo) {
+                priceInfo.moveToNextStatus();
+                logger.info(`${p.label} | Price that was submitted: ${ (priceInfo.priceSubmitted/10**5).toFixed(5) }$`);
+                if (priceInfo.priceSubmitted != (price as number)) {
+                    logger.error(`${p.label} | Price submitted and price revealed are diffent!`);
+                }
+            }
+            i++;
+        }
+    });
 }
+
+// 1. get pricesubmitter contract address from ftsomanager
+ftsoManagerWeb3Contract.methods.priceSubmitter().call().then( (address:string) => {
+
+    priceSubmitterContract = getContract( provider, address, priceSubmitterAbi );
+    priceSubmitterWeb3Contract = getWeb3Contract( web3, address, priceSubmitterAbi );
+
+    setupEvents();
+
+    // 2. get ftsos
+    ftsoManagerWeb3Contract.methods.getFtsos().call().then( (lst:any) => {
+
+        ftsosCount = lst.length;
+        for(let ftso of lst) {
+            let contract = getWeb3Contract( web3, ftso, ftsoAbi );
+            contract.methods.symbol().call().then( (symbol:string) => {
+                ftso2symbol.set(ftso, symbol);
+                symbol2ftso.set(symbol, ftso);
+            }).catch((err:any) => logger.error(`symbol() | ${ err }`));
+        }
+
+        // 3. get epochinfo from ftsomanager
+        ftsoManagerWeb3Contract.methods.getPriceEpochConfiguration().call().then( (data:any) => {
+            epochSettings = new EpochSettings( bigNumberToMillis(data[0]), bigNumberToMillis(data[1]), bigNumberToMillis(data[2]) );
+            setupSubmissionAndReveal();
+        }).catch((err:any) => logger.error(`getPriceEpochConfiguration() | ${ err }`));
+
+    }).catch((err:any) => logger.error(`getFtsos() | ${ err }`));
+
+}).catch((err:any) => logger.error(`priceSubmitter() | ${ err }`));
