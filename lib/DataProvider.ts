@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import { DataProviderConfiguration } from './Configuration';
 import { DataProviderData } from './DataProviderData';
 import * as impl from './PriceProviderImpl';
-import { bigNumberToMillis, getAbi, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, submitPriceHash, waitFinalize3Factory } from './utils';
+import { bigNumberToMillis, getAbi, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
 import { PriceInfo } from './PriceInfo';
 import { BigNumber, ethers } from 'ethers';
 import { EpochSettings } from './EpochSettings';
@@ -132,7 +132,7 @@ function supportedSymbols() {
     return Array.from(symbol2ftso.keys()).join(", ");
 }
     
-async function submitPrices(lst:DataProviderData[]) {
+async function submitPriceHashes(lst:DataProviderData[]) {
     let epochId = epochSettings.getCurrentEpochId().toString();
 
     let hashes = [];
@@ -148,7 +148,7 @@ async function submitPrices(lst:DataProviderData[]) {
         if (price) {
             let preparedPrice = preparePrice(price, p.decimals);
             let random = await getRandom();
-            let hash = submitPriceHash(preparedPrice, random);
+            let hash = priceHash(preparedPrice, random);
             hashes.push( hash );
             addresses.push( symbol2ftso.get(p.symbol) );
             logger.info(`${p.label} | Submitting price: ${ (preparedPrice/10**p.decimals).toFixed(p.decimals) } $ for ${ epochId }`);
@@ -157,7 +157,7 @@ async function submitPrices(lst:DataProviderData[]) {
     }
 
     if(hashes.length > 0) {
-        var fnToEncode = priceSubmitterWeb3Contract.methods.submitPrices(addresses, hashes);
+        var fnToEncode = priceSubmitterWeb3Contract.methods.submitPriceHashes(addresses, hashes);
         await signAndFinalize3("Submit prices", priceSubmitterWeb3Contract.options.address, fnToEncode);
     }
 }
@@ -245,7 +245,7 @@ async function setupSubmissionAndReveal() {
     
     if(diffSubmit > submitPeriod - conf.submitOffset && ftso2symbol.size >= ftsosCount) {
         setTimeout(function() {
-            execute(async function() { await submitPrices(data); });
+            execute(async function() { await submitPriceHashes(data); });
         }, diffSubmit - submitPeriod + conf.submitOffset);
     
         setTimeout(function() {
@@ -257,7 +257,7 @@ async function setupSubmissionAndReveal() {
 }
 
 function setupEvents() {
-    priceSubmitterContract.on("PricesSubmitted", async (submitter:string, epochId:any, ftsos:string[], hashes:string[], success:boolean[], timestamp:any) => {
+    priceSubmitterContract.on("PriceHashesSubmitted", async (submitter:string, epochId:any, ftsos:string[], hashes:string[], success:boolean[], timestamp:any) => {
         if(submitter != account.address) return;
 
         let epochIdStr = epochId.toString();

@@ -101,6 +101,6 @@ export function bigNumberToMillis(num:number) {
     return BigNumber.from( num * 1000 );
 }
 
-export function submitPriceHash(price: number | BN | BigNumber, random: number | BN | BigNumber): string {
+export function priceHash(price: number | BN | BigNumber, random: number | BN | BigNumber): string {
     return ethers.utils.solidityKeccak256([ "uint256", "uint256" ], [ price.toString(), random.toString() ]);
 }
