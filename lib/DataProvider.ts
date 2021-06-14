@@ -94,10 +94,6 @@ function preparePrice(price: number, decimals:number) {
     return Math.floor(price * 10**decimals);
 };
 
-function beforeSendSignedTransactionCallback() {
-    // TODO
-}
-
 async function signAndFinalize3(label:string, toAddress:string, fnToEncode:any, gas:string="400000"):Promise<boolean> {
     let nonce = await getNonce();
     var tx = {
@@ -110,7 +106,6 @@ async function signAndFinalize3(label:string, toAddress:string, fnToEncode:any, 
     };
     var signedTx = await account.signTransaction(tx);
     try {
-        beforeSendSignedTransactionCallback();
         await waitFinalize3(account.address, () => web3.eth.sendSignedTransaction(signedTx.rawTransaction!));
         return true;
     } catch(e) {
@@ -148,7 +143,7 @@ async function submitPriceHashes(lst:DataProviderData[]) {
         if (price) {
             let preparedPrice = preparePrice(price, p.decimals);
             let random = await getRandom();
-            let hash = priceHash(preparedPrice, random);
+            let hash = priceHash(preparedPrice, random, account.address);
             hashes.push( hash );
             addresses.push( symbol2ftso.get(p.symbol) );
             logger.info(`${p.label} | Submitting price: ${ (preparedPrice/10**p.decimals).toFixed(p.decimals) } $ for ${ epochId }`);
