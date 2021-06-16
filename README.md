@@ -1,9 +1,17 @@
-Flare price provider
+*Flare Network* price provider
 ====================
 
-In this repository one can find an example of flare price provider implementation. Before running the provider one must implement their own price provider. That is a class that implements `IPriceProvider` interface. Class must provide `getPrice()` that is called when submitting the price to Flare network. Also, it must be put in `PriceProviderImpl.ts` file (see example `RandomPriceProvider`).
+The repository contains an example of *Flare Network* price provider implementation. 
 
-In order to run the flare provider with the wanted price provider one must prepare the configuration json file. See the example with the `RandomPriceProvider` saved to `example.json`:
+## Getting started (test environment)
+
+- Clone this repository.
+- Call `yarn` to install node packages.
+- Make sure the development version of *Flare Network* (`scdev`) nodes runs localy and the relevant contracts are deployed ([instructions](https://gitlab.com/flarenetwork/flare-smart-contracts)).
+
+While a test run can be carried out with test random provider, before running the provider with real prices, one should implement their own price feed class. That is a class that implements `IPriceProvider` interface. Class must provide `getPrice()` that is called when submitting the price to *Flare Network*. Also, it must be put in `PriceProviderImpl.ts` file (see example `RandomPriceProvider`).
+
+In order to run the *Flare Network* price provider with the desired price provider one must prepare the JSON configuration file. See the example for `RandomPriceProvider` in file `example.json`, which is of the form:
 
 ```
 {
@@ -29,20 +37,29 @@ In order to run the flare provider with the wanted price provider one must prepa
 }
 ```
 
-Then flare provider may be run from the root folder with the: `./scripts/run-provider.sh ./example.json`. The first (and only) parameter is the path to configuration file. If ommited script looks for file named config.json in the root folder.
+With JSON configuration set, the price provider may be run from the root folder of the repo by calling
 
-Explanation of params in configuration file
+```
+./scripts/run-provider.sh ./example.json
+```
+
+The first (and only) parameter is the path to configuration file. If omitted script looks for a file named `config.json` in the root folder.
+
+The file `example.json` provided in the repo is pre-configured with one of the built-in private keys in the test *Flare Network* (`scdev`) with large available balance in FLR (for installation and deployment see [instructions](https://gitlab.com/flarenetwork/flare-smart-contracts)). Before running, please verify the address of `FTSO Manager` contract is correct (parameter `ftsoManagerContractAddress`). It can be obtained after the deployment of smart contracts on `scdev` network, from the generated file `deployment/deploys/scdev.json` (under the contract name `FtsoManager`) in [`flare-smart-contracts` repository](https://gitlab.com/flarenetwork/flare-smart-contracts).
+
+Explanation of parameters in a configuration file
 -------------------------------------------
 
-```
-accountPrivateKey: Private key of your account
-rpcUrl: RPC url of the node connected to flare network
-ftsoManagerContractAddress: Address of the FtsoManager contract on the Flare network
-submitOffset: Tells us how much after start of submit period, we submit the prices (in milliseconds)
-revealOffset: Tells us how much after start of reveal period, we reveal the prices (in milliseconds)
-priceProviderList: List of price provider data
-    symbol: FAsset which price will be submitted/revealed (eg. FXRP, FLTC, etc.)
-    decimals: Number of decimals (default: 5)
-    priceProviderClass: Name of the class as defined in PriceProviderImpl.ts (must implement IPriceProvider interface)
-    priceProviderParams: Array of parameters that are passed to constructor of 'priceProviderClass'
-```
+
+- `accountPrivateKey` - Private key of your account from which prices will be sent.
+- `rpcUrl` - RPC url of the API node connected to *Flare Network*.
+- `ftsoManagerContractAddress` - Address of the `FtsoManager` contract on the *Flare Network*.
+- `submitOffset` - Defines the delay in ms of sending submit calls relative to the start of a price epoch. 
+- `revealOffset` - Defines the delay in ms of sending reveal calls relative to the start of reveal period.
+- `priceProviderList` - A list of price provider data. Each object has the following parameters:
+  - `symbol` - FAsset which price will be submitted/revealed (eg. FXRP, FLTC, etc.)
+  - `decimals` - Number of decimals (default: 5).
+  - `priceProviderClass` - Name of the class as defined in `PriceProviderImpl.ts` (must implement `IPriceProvider` interface).
+  - `priceProviderParams` - Array of parameters that are passed to constructor of `priceProviderClass`.
+
+**NOTE:** while prices can be submitted to smart contract, the voting power of the account is initially 0, even if the account has large FLR balance. Voting power is obtained by holding wrapped FLRs (Wflr) and/or relevant Fasset tokens. Those can be obtained through `Wflr` contract and relevant Fasset token contracts. See [flare-smart-contracts repo](https://gitlab.com/flarenetwork/flare-smart-contracts) for details.

@@ -1,0 +1,21 @@
+{
+    "accountPrivateKey": "0x28d1bfbbafe9d1d4f5a11c3c16ab6bf9084de48d99fbac4058bdfa3c80b29085",
+    "rpcUrl": "http://127.0.0.1:9660/ext/bc/C/rpc",
+    "ftsoManagerContractAddress": "0xD6C850aeBFDC46D7F4c207e445cC0d6B0919BDBe",
+    "submitOffset": 80000,
+    "revealOffset": 2000,
+    "priceProviderList": [
+        {
+            "symbol": "FXRP",
+            "decimals": 5,
+            "priceProviderClass": "RandomPriceProvider",
+            "priceProviderParams": ["XRP/USD"]
+        },
+        {
+            "symbol": "FXDG",
+            "decimals": 5,
+            "priceProviderClass": "RandomPriceProvider",
+            "priceProviderParams": ["XDG/USD"]
+        }
+    ]
+}

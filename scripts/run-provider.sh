@@ -2,7 +2,7 @@
 CONFIG_PATH=${1:-./config.json}
 
 # Compile typescript
-tsc
+yarn tsc
 
 # Run DataProvider
 node dist/DataProvider.js -c $CONFIG_PATH
