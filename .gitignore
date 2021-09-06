@@ -30,8 +30,5 @@ cache/
 ## yarn
 yarn-error.log
 
-## Config
-config.json
-
 ## Logs
 *.log

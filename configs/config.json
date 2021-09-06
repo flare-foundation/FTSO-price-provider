@@ -1,0 +1,60 @@
+{
+    "accountPrivateKey": "0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122",
+    "rpcUrl": "http://34.141.71.34:9650/ext/bc/C/rpc",
+    "priceSubmitterContractAddress": "0x1000000000000000000000000000000000000003",
+    "submitOffset": 170000,
+    "revealOffset": 1000,
+    "whitelist": false,
+    "trusted": true,
+    "gasPrice": "3000000000000",
+    "priceProviderList": [
+        {
+            "symbol": "WSGB",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["XRP/USD"]
+        },
+        {
+            "symbol": "XRP",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["XRP/USD"]
+        },
+        {
+            "symbol": "ADA",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["ADA/USD"]
+        },
+        {
+            "symbol": "ALGO",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["ALGO/USD"]
+        },
+        {
+            "symbol": "BCH",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["BCH/USD"]
+        },
+        {
+            "symbol": "DGB",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["DGB/USD"]
+        },
+        {
+            "symbol": "LTC",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["LTC/USD"]
+        },
+        {
+            "symbol": "DOGE",
+            "decimals": 5,
+            "priceProviderClass": "WsExchangPriceProvider",
+            "priceProviderParams": ["XDG/USD"]
+        }
+    ]
+}
