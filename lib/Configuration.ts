@@ -6,6 +6,10 @@ export class DataProviderConfiguration {
     public ftsoManagerContractAddress!: string;
     public submitOffset:number=60000;   // in millis - tells us how much after start of submit period, we submit the price (e.g. if submitOffset = 30000, then price will be submitted 30s after epoch submit period starts) 
     public revealOffset:number=1000;    // in millis - tells us how much after start of reveal period, we reveal the price (e.g. if revealOffset = 10000, then price will be revealed 10s after epoch reveal period starts)
+    public gasPrice!: string;
+    public whitelist!: boolean;
+    public trusted!: boolean;
+    public priceSubmitterContractAddress!: string;
 
     validate() {
         if(!this.accountPrivateKey) {

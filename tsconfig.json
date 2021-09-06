@@ -5,5 +5,8 @@
         "strict": true,
         "esModuleInterop": true,
         "outDir": "dist",
-    }
+    },
+    "include": [
+        "lib/**/*", "typechain-web3-v1"
+    ]
 }

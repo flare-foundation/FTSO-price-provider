@@ -1,7 +1,6 @@
 import BN from 'bn.js';
 import { BigNumber, ethers } from 'ethers';
 import * as fs from 'fs';
-import glob from 'glob';
 import * as winston from 'winston';
 var Web3 = require('web3');
 
@@ -39,8 +38,6 @@ export function getWeb3(rpcLink: string, logger?: any) {
         web3.setProvider(provider);
     }
     web3.eth.handleRevert = true;
-    // web3.eth.defaultCommon = { customChain: { name: 'coston', chainId: 20210413, networkId: 20210413 }, baseChain: 'ropsten', hardfork: 'petersburg' };
-    //    }
     return web3;
 };
 
@@ -53,14 +50,12 @@ export function getAbi(abiPath: string) {
     return abi;
 }
 
-export async function getWeb3Contract(web3: any, address: string, name: string) {
-    let abiPath = await relativeContractABIPathForContractName(name);
-    return new web3.eth.Contract(getAbi(`artifacts/${abiPath}`), address);
+export function getWeb3Contract(web3: any, address: string, abi: any) {
+    return new web3.eth.Contract(abi, address);
 };
 
-export async function getContract(provider: any, address: string, name: string) {
-    let abiPath = await relativeContractABIPathForContractName(name);
-    return new ethers.Contract(address, getAbi(`artifacts/${abiPath}`), provider);
+export function getContract(provider: any, address: string, abi: any): ethers.Contract {
+    return new ethers.Contract(address, abi, provider);
 };
 
 export function getWeb3Wallet(web3: any, privateKey: string) {
@@ -128,21 +123,6 @@ export function bigNumberToMillis(num: number) {
 }
 
 export function priceHash(price: number | BN | BigNumber, random: number | BN | BigNumber, address: string): string {
-    return ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["uint256", "uint256", "address"], [price.toString(), random.toString(), address]))
+    return ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode([ "uint256", "uint256", "address" ], [ price.toString(), random.toString(), address]))
 }
 
-export async function relativeContractABIPathForContractName(name: string, artifactsRoot = "artifacts"): Promise<string> {
-    return new Promise((resolve, reject) => {
-        glob(`contracts/**/${name}.sol/${name}.json`, {cwd: artifactsRoot}, (er: any, files: string[] | null) => {
-            if (er) {
-                reject(er)
-            } else {
-                if (files && files.length === 1) {
-                    resolve(files[0])
-                } else {
-                    reject(files)
-                }
-            }
-        })
-    })
-}

@@ -7,8 +7,6 @@
 
 # Typescript 
 dist
-typechain
-typechain-truffle
 
 # Testing
 test_logs
@@ -27,14 +25,10 @@ coverage.json
 coverage/
 
 ## hardhat?
-artifacts/
 cache/
 
 ## yarn
 yarn-error.log
-
-## npm package file
-package-lock.json
 
 ## Config
 config.json

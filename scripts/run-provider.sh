@@ -1,5 +1,5 @@
 # Path to config json. By default it seeks file named config.json in the root folder
-CONFIG_PATH=${1:-./config.json}
+CONFIG_PATH=${1:-./configs/config.json}
 
 # Compile typescript
 yarn tsc

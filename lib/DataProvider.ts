@@ -1,16 +1,21 @@
+import { BigNumber } from 'ethers';
 import * as fs from 'fs';
 import Web3 from 'web3';
+import { FtsoManager } from '../typechain-web3-v1/FtsoManager';
+import { FtsoRegistry } from '../typechain-web3-v1/FtsoRegistry';
+import { PriceSubmitter } from '../typechain-web3-v1/PriceSubmitter';
+import { VoterWhitelister } from '../typechain-web3-v1/VoterWhitelister';
 import { DataProviderConfiguration } from './Configuration';
 import { DataProviderData } from './DataProviderData';
-import * as impl from './PriceProviderImpl';
-import { bigNumberToMillis, getAbi, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
-import { PriceInfo } from './PriceInfo';
-import { BigNumber, ethers } from 'ethers';
 import { EpochSettings } from './EpochSettings';
+import { PriceInfo } from './PriceInfo';
+import * as impl from './PriceProviderImpl';
+import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
 
 let randomNumber = require("random-number-csprng");
 let yargs = require("yargs");
 
+// Args parsing
 let args = yargs
     .option('config', {
         alias: 'c',
@@ -20,64 +25,87 @@ let args = yargs
         demand: true
     }).argv;
 
-let conf:DataProviderConfiguration = JSON.parse( fs.readFileSync( args['config'] ).toString() ) as DataProviderConfiguration;
+let conf: DataProviderConfiguration = JSON.parse(fs.readFileSync(args['config']).toString()) as DataProviderConfiguration;
 
-const FTSO_ABI_PATH = "./data/ftso_abi.json";
-const ftsoAbi = getAbi(FTSO_ABI_PATH);
-
-const FTSO_MANAGER_ABI_PATH = "./data/ftsomanager_abi.json";
-const ftsoManagerAbi = getAbi(FTSO_MANAGER_ABI_PATH);
-
-const PRICE_SUBMITTER_ABI_PATH = "./data/pricesubmitter_abi.json";
-const priceSubmitterAbi = getAbi(PRICE_SUBMITTER_ABI_PATH);
+const logger = getLogger();
 
 const provider = getProvider(conf.rpcUrl);
 const web3 = getWeb3(conf.rpcUrl) as Web3;
 const account = getWeb3Wallet(web3, conf.accountPrivateKey);
 
-const ftsoManagerWeb3Contract = getWeb3Contract( web3, conf.ftsoManagerContractAddress, ftsoManagerAbi );
+let priceSubmitterWeb3Contract: PriceSubmitter; 
+let priceSubmitterContract: any; 
+let ftsoManagerWeb3Contract: FtsoManager;
+let voterWhitelisterContract: VoterWhitelister;
+let ftsoRegistryContract: FtsoRegistry;
 
-let ftsosCount:number;
-let priceSubmitterContract: ethers.Contract;
-let priceSubmitterWeb3Contract:any;
-let ftso2symbol:Map<string,string> = new Map();
-let symbol2ftso:Map<string,string> = new Map();
-let symbol2dpd:Map<string, DataProviderData> = new Map();
+let ftsosCount: number;
+let ftso2symbol: Map<string, string> = new Map();
+let symbol2Index: Map<string, any> = new Map();
+let symbol2dpd: Map<string, DataProviderData> = new Map();
 
-const data:DataProviderData[] = conf.priceProviderList.map( (ppc, index) => {
+const data: DataProviderData[] = conf.priceProviderList.map((ppc, index) => {
+    ppc.priceProviderParams.push(logger);
     let dpd = {
         index: index,
         symbol: ppc.symbol,
         decimals: ppc.decimals,
-        priceProvider: new (impl as any)[ppc.priceProviderClass]( ...ppc.priceProviderParams ),
-        label: ppc.priceProviderClass + "(" + ppc.symbol + "/USD)" 
+        priceProvider: new (impl as any)[ppc.priceProviderClass](...ppc.priceProviderParams),
+        label: ppc.priceProviderClass + "(" + ppc.symbol + "/USD)"
     } as DataProviderData;
     symbol2dpd.set(ppc.symbol, dpd);
     return dpd;
 });
 
-if(data.length == 0) {
+if (data.length == 0) {
     throw Error("No price providers in configuration!");
 }
 
 
 const waitFinalize3 = waitFinalize3Factory(web3);
-const logger = getLogger();
 
-let epochSettings:EpochSettings;
-let nonce:number|undefined;     // if undefined, we retrieve it from blockchain, otherwise we use it
+let epochSettings: EpochSettings;
+let nonce: number | undefined;     // if undefined, we retrieve it from blockchain, otherwise we use it
+let forcedNonceResetOn = 10;
+let nonceResetCount = forcedNonceResetOn;
 let symbol2epochId2priceInfo: Map<string, Map<string, PriceInfo>> = new Map();
-data.forEach( (d) => {
+data.forEach((d) => {
     symbol2epochId2priceInfo.set(d.symbol, new Map());
 });
 let epochId2endRevealTime: Map<string, number> = new Map();
 let functionsToExecute: any[] = [];
 
+let currentBalance = 0;
+
+async function recordBalance(tx: any, receipt: any) {
+    let newBalance = parseFloat(await web3.eth.getBalance(account.address));
+
+    let fee = null;
+
+    if (tx && receipt) {
+        fee = parseFloat(tx.gasPrice) * parseFloat(receipt.gasUsed);
+        logger.info(`Fee: ${fee}`);
+    }
+    if (currentBalance != 0) {
+        let balanceReduction = currentBalance - newBalance
+        logger.info(`Balance reduction: ${balanceReduction}`)
+        if (fee) {
+            let discountedPriceSharePct = Math.round(balanceReduction / fee * 10000) / 100;
+            logger.info(`Discounted price share: ${discountedPriceSharePct}%`);
+        }
+    } else {
+        logger.info(`Initial balance: ${newBalance}`)
+    }
+    currentBalance = newBalance;
+}
+
 async function getNonce(): Promise<string> {
-    if(nonce) {
+    nonceResetCount--;
+    if (nonce && nonceResetCount > 0) {
         nonce++;
     } else {
         nonce = (await web3.eth.getTransactionCount(account.address));
+        nonceResetCount = forcedNonceResetOn;
     }
     return nonce + "";   // string returned
 }
@@ -86,36 +114,39 @@ function resetNonce() {
     nonce = undefined;
 }
 
-async function getRandom(minnum:number=0, maxnum:number=10**5) {
+async function getRandom(minnum: number = 0, maxnum: number = 10 ** 5) {
     return await randomNumber(minnum, maxnum);
 };
 
-function preparePrice(price: number, decimals:number) {
-    return Math.floor(price * 10**decimals);
+function preparePrice(price: number, decimals: number) {
+    return Math.floor(price * 10 ** decimals);
 };
 
-async function signAndFinalize3(label:string, toAddress:string, fnToEncode:any, gas:string="400000"):Promise<boolean> {
+async function signAndFinalize3(label: string, toAddress: string, fnToEncode: any, gas: string = "2500000"): Promise<boolean> {
     let nonce = await getNonce();
     var tx = {
         from: account.address,
         to: toAddress,
         gas: gas,
-        gasPrice: "225000000000",
+        gasPrice: conf.gasPrice,
         data: fnToEncode.encodeABI(),
         nonce: nonce
     };
     var signedTx = await account.signTransaction(tx);
     try {
-        await waitFinalize3(account.address, () => web3.eth.sendSignedTransaction(signedTx.rawTransaction!));
+        await recordBalance(tx, null);
+        let receipt = await waitFinalize3(account.address, () => web3.eth.sendSignedTransaction(signedTx.rawTransaction!));
+        await recordBalance(tx, receipt);
         return true;
-    } catch(e) {
-        if( e.message.indexOf("Transaction has been reverted by the EVM") < 0 ) {
-            logger.error(`${label} | Nonce sent: ${ nonce } | signAndFinalize3 error: ${ e.message }`);
-        } else {      
+    } catch (e: any) {
+        if (e.message.indexOf("Transaction has been reverted by the EVM") < 0) {
+            logger.error(`${label} | Nonce sent: ${nonce} | signAndFinalize3 error: ${e.message}`);
+            resetNonce();
+        } else {
             fnToEncode.call({ from: account.address })
                 .then((result: any) => { throw Error('unlikely to happen: ' + JSON.stringify(result)) })
                 .catch((revertReason: any) => {
-                    logger.error(`${label} | Nonce sent: ${ nonce } | signAndFinalize3 error: ${ revertReason }`);
+                    logger.error(`${label} | Nonce sent: ${nonce} | signAndFinalize3 error: ${revertReason}`);
                     resetNonce();
                 });
         }
@@ -124,18 +155,35 @@ async function signAndFinalize3(label:string, toAddress:string, fnToEncode:any, 
 }
 
 function supportedSymbols() {
-    return Array.from(symbol2ftso.keys()).join(", ");
+    return Array.from(symbol2Index.keys()).join(", ");
 }
-    
-async function submitPriceHashes(lst:DataProviderData[]) {
+
+function isSymbolActive(bitmask: number, symbol: string) {
+    let index = symbol2Index.get(symbol);
+    return index >= 0 && ((bitmask >> index) % 2) == 1;
+}
+
+let currentBitmask = 0;
+
+async function submitPriceHashes(lst: DataProviderData[]) {
+    logger.info("SUBMITTING")
     let epochId = epochSettings.getCurrentEpochId().toString();
+    let realEpochData = await ftsoManagerWeb3Contract.methods.getCurrentPriceEpochData().call()
+    logger.info(`Internal epoch id: ${epochId}, real ${realEpochData.priceEpochId}`)
 
     let hashes = [];
-    let addresses = [];
-    for(let p of lst) {
+    let ftsoIndices = []
+    currentBitmask = await priceSubmitterWeb3Contract.methods.voterWhitelistBitmap(account.address).call() as any;
+    logger.info(`Current bitmask: ${currentBitmask.toString(2)}`);
+
+    for (let p of lst) {
         p = p as DataProviderData;
-        if(!symbol2ftso.get(p.symbol)) {
-            logger.info(`Skipping submit of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${ supportedSymbols() }.`);
+        if (!symbol2Index.has(p.symbol)) {
+            logger.info(`Skipping submit of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${supportedSymbols()}.`);
+            continue;
+        }
+        if (!isSymbolActive(currentBitmask, p.symbol) && !conf.trusted) {
+            logger.info(`Skipping submit of ${p.symbol} since it is not whitelisted`);
             continue;
         }
 
@@ -143,52 +191,56 @@ async function submitPriceHashes(lst:DataProviderData[]) {
         if (price) {
             let preparedPrice = preparePrice(price, p.decimals);
             let random = await getRandom();
+            // let hash = priceHash2(web3, preparedPrice, random, account.address);
             let hash = priceHash(preparedPrice, random, account.address);
-            hashes.push( hash );
-            addresses.push( symbol2ftso.get(p.symbol) );
-            logger.info(`${p.label} | Submitting price: ${ (preparedPrice/10**p.decimals).toFixed(p.decimals) } $ for ${ epochId }`);
+            // let hash = priceHashOld(preparedPrice, random);
+            hashes.push(hash);
+            ftsoIndices.push(symbol2Index.get(p.symbol));
+            logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
             symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
+        } else {
+            logger.info(`No price for ${p.symbol}`);
         }
     }
 
-    if(hashes.length > 0) {
-        var fnToEncode = priceSubmitterWeb3Contract.methods.submitPriceHashes(addresses, hashes);
-        await signAndFinalize3("Submit prices", priceSubmitterWeb3Contract.options.address, fnToEncode);
+    if (hashes.length > 0) {
+        logger.info(`Ftso indices: ${ftsoIndices.map(x => x.toString()).toString()}`)
+        var fnToEncode = priceSubmitterWeb3Contract.methods.submitPriceHashes(epochId, ftsoIndices, hashes);
+        await signAndFinalize3("Submit prices", priceSubmitterWeb3Contract.options.address, fnToEncode, "2500000");
     }
 }
 
-async function revealPrices(lst:DataProviderData[], epochId: BigNumber): Promise<void> {
+async function revealPrices(lst: DataProviderData[], epochId: BigNumber): Promise<void> {
+    logger.info("REVEALING")
     const epochIdStr: string = epochId.toString();
-    while(epochId2endRevealTime.get(epochIdStr) && new Date().getTime() < epochId2endRevealTime.get(epochIdStr)!) {
+    while (epochId2endRevealTime.get(epochIdStr) && new Date().getTime() < epochId2endRevealTime.get(epochIdStr)!) {
 
-        let addresses = [];
+        // let addresses = [];
+        let ftsoIndices = [];
         let prices = [];
         let randoms = [];
 
-        for(let p of lst) {
+        for (let p of lst) {
             p = p as DataProviderData;
-            if(!symbol2ftso.get(p.symbol)) {
-                logger.info(`Skipping reveal of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${ supportedSymbols() }.`);
+            if (!symbol2Index.get(p.symbol)) {
+                logger.info(`Skipping reveal of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${supportedSymbols()}.`);
                 continue;
             }
 
             let priceInfo = symbol2epochId2priceInfo.get(p.symbol)!.get(epochIdStr);
-        
-            if(priceInfo) {
-                logger.info(`${p.label} | Revealing price for ${ epochIdStr }`);
-                priceInfo.moveToNextStatus();
 
-                addresses.push( symbol2ftso.get(p.symbol) );
-                prices.push( priceInfo.priceSubmitted );
-                randoms.push( priceInfo.random );
+            if (priceInfo) {
+                logger.info(`${p.label} | Revealing price for ${epochIdStr}`);
+                priceInfo.moveToNextStatus();
+                ftsoIndices.push(symbol2Index.get(p.symbol));
+                prices.push(priceInfo.priceSubmitted);
+                randoms.push(priceInfo.random);
             }
         }
 
-        if(prices.length > 0) {
-            var fnToEncode = priceSubmitterWeb3Contract.methods.revealPrices(epochIdStr, addresses, prices, randoms);
-            let success:boolean = await signAndFinalize3("Reveal prices", priceSubmitterWeb3Contract.options.address, fnToEncode, (prices.length * 300000)+"");
-            
-            // if(success) logger.info(`Reveal prices finished for ${ epochIdStr }`);
+        if (prices.length > 0) {
+            var fnToEncode = priceSubmitterWeb3Contract.methods.revealPrices(epochIdStr, ftsoIndices, prices, randoms);
+            await signAndFinalize3("Reveal prices", priceSubmitterWeb3Contract.options.address, fnToEncode, "2500000");
             break;
         }
 
@@ -200,14 +252,15 @@ function execute(func: () => any) {
     functionsToExecute.push(func);
 }
 
-async function run() {
+async function runExecution() {
+    logger.info(`RPC: ${conf.rpcUrl}`)
     while (true) {
         if (functionsToExecute.length > 0) {
             let func: any = functionsToExecute.shift();
             try {
                 await func();
-            } catch (e) {
-                logger.error("TX fail: " + e.message);
+            } catch (e: any) {
+                logger.error("TX fail: " + e.message + " | Stack: " + e.stack);
             }
         } else {
             await new Promise((resolve: any) => { setTimeout(() => { resolve() }, 500) })
@@ -215,12 +268,10 @@ async function run() {
     }
 }
 
-run();
-
 async function setupSubmissionAndReveal() {
-    let epochId:BigNumber = epochSettings.getCurrentEpochId();
-    let epochSubmitTimeEnd:number = epochSettings.getEpochSubmitTimeEnd().toNumber();
-    let epochRevealTimeEnd:number = epochSettings.getEpochReveaTimeEnd().toNumber();
+    let epochId: BigNumber = epochSettings.getCurrentEpochId();
+    let epochSubmitTimeEnd: number = epochSettings.getEpochSubmitTimeEnd().toNumber();
+    let epochRevealTimeEnd: number = epochSettings.getEpochReveaTimeEnd().toNumber();
     let now = new Date().getTime();
     let diffSubmit = epochSubmitTimeEnd - now;
     let revealPeriod = epochSettings.getRevealPeriod().toNumber();
@@ -228,23 +279,25 @@ async function setupSubmissionAndReveal() {
     epochId2endRevealTime.set(epochId.toString(), epochRevealTimeEnd);
 
     logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    logger.info(`EPOCH DATA: epoch ${ epochId } submit will end in: ${ diffSubmit }ms, reveal in: ${ diffSubmit+revealPeriod }ms, submitPeriod: ${ submitPeriod }ms, revealPeriod: ${ revealPeriod }ms`);
-    setTimeout(function() {
-        logger.info(`SUBMIT ENDED FOR: ${ epochId }`);
+    logger.info(`EPOCH DATA: epoch ${epochId} submit will end in: ${diffSubmit}ms, reveal in: ${diffSubmit + revealPeriod}ms, submitPeriod: ${submitPeriod}ms, revealPeriod: ${revealPeriod}ms`);
+    setTimeout(function () {
+        logger.info(`SUBMIT ENDED FOR: ${epochId}`);
         logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }, epochSubmitTimeEnd - new Date().getTime());
-    
-    setTimeout(function() {
-        logger.info(`REVEAL ENDED FOR: ${ epochId }`);
+
+    setTimeout(function () {
+        logger.info(`REVEAL ENDED FOR: ${epochId}`);
     }, epochRevealTimeEnd - new Date().getTime());
-    
-    if(diffSubmit > submitPeriod - conf.submitOffset && ftso2symbol.size >= ftsosCount) {
-        setTimeout(function() {
-            execute(async function() { await submitPriceHashes(data); });
+
+    if (diffSubmit > submitPeriod - conf.submitOffset && ftso2symbol.size >= ftsosCount) {
+        setTimeout(function () {
+            logger.info(`Submit in ${diffSubmit - submitPeriod + conf.submitOffset}ms`)
+            execute(async function () { await submitPriceHashes(data); });
         }, diffSubmit - submitPeriod + conf.submitOffset);
-    
-        setTimeout(function() {
-            execute(async function() { await revealPrices(data, epochId); });
+
+        setTimeout(function () {
+            logger.info(`Reveal in ${diffSubmit + conf.revealOffset}ms`)
+            execute(async function () { await revealPrices(data, epochId); });
         }, diffSubmit + conf.revealOffset);
     }
 
@@ -252,35 +305,35 @@ async function setupSubmissionAndReveal() {
 }
 
 function setupEvents() {
-    priceSubmitterContract.on("PriceHashesSubmitted", async (submitter:string, epochId:any, ftsos:string[], hashes:string[], success:boolean[], timestamp:any) => {
-        if(submitter != account.address) return;
+    priceSubmitterContract.on("PriceHashesSubmitted", async (submitter: string, epochId: any, ftsos: string[], hashes: string[], timestamp: any) => {
+        if (submitter != account.address) return;
 
         let epochIdStr = epochId.toString();
-        for(let ftso of ftsos) {
+        for (let ftso of ftsos) {
             let symbol = ftso2symbol.get(ftso)!;
-            let p:DataProviderData = symbol2dpd.get(symbol)!;
+            let p: DataProviderData = symbol2dpd.get(symbol)!;
             let priceInfo = symbol2epochId2priceInfo.get(symbol)!.get(epochIdStr);
             priceInfo?.moveToNextStatus();
-            logger.info(`${p.label} | Price submitted in epoch ${ epochIdStr }`);
+            logger.info(`${p.label} | Price submitted in epoch ${epochIdStr}`);
         }
     });
 
-    priceSubmitterContract.on("PricesRevealed", async (voter:string, epochId:any, ftsos:string[], prices:any[], randoms:string[], success:boolean[], timestamp:any) => {
-        if(voter != account.address) return;
+    priceSubmitterContract.on("PricesRevealed", async (voter: string, epochId: any, ftsos: string[], prices: any[], randoms: string[], timestamp: any) => {
+        if (voter != account.address) return;
 
         let epochIdStr = epochId.toString();
         let i = 0;
-        for(let ftso of ftsos) {
+        for (let ftso of ftsos) {
             let symbol = ftso2symbol.get(ftso)!;
-            let p:DataProviderData = symbol2dpd.get(symbol)!;
+            let p: DataProviderData = symbol2dpd.get(symbol)!;
             let price = prices[i];
-            
-            logger.info(`${p.label} | Price revealed in epoch ${ epochIdStr }: ${(price/10**p.decimals).toFixed(p.decimals)}$`);
-            
+
+            logger.info(`${p.label} | Price revealed in epoch ${epochIdStr}: ${(price / 10 ** p.decimals).toFixed(p.decimals)}$.`);
+
             let priceInfo = symbol2epochId2priceInfo.get(symbol)!.get(epochIdStr);
-            if(priceInfo) {
+            if (priceInfo) {
                 priceInfo.moveToNextStatus();
-                logger.info(`${p.label} | Price that was submitted: ${ (priceInfo.priceSubmitted/10**5).toFixed(5) }$`);
+                logger.info(`${p.label} | Price that was submitted: ${(priceInfo.priceSubmitted / 10 ** 5).toFixed(5)}$`);
                 if (priceInfo.priceSubmitted != (price as number)) {
                     logger.error(`${p.label} | Price submitted and price revealed are diffent!`);
                 }
@@ -290,32 +343,77 @@ function setupEvents() {
     });
 }
 
-// 1. get pricesubmitter contract address from ftsomanager
-ftsoManagerWeb3Contract.methods.priceSubmitter().call().then( (address:string) => {
+async function runDataProvider() {
 
-    priceSubmitterContract = getContract( provider, address, priceSubmitterAbi );
-    priceSubmitterWeb3Contract = getWeb3Contract( web3, address, priceSubmitterAbi );
+    priceSubmitterWeb3Contract = await getWeb3Contract(web3, conf.priceSubmitterContractAddress, "PriceSubmitter");
+    priceSubmitterContract = await getContract(provider, conf.priceSubmitterContractAddress, "PriceSubmitter");
+    runExecution();
 
-    setupEvents();
+    try {
+        let ftsoManagerAddress = await priceSubmitterWeb3Contract.methods.getFtsoManager().call();
+        logger.info(`FtsoManager address obtained ${ftsoManagerAddress}`)
+        ftsoManagerWeb3Contract = await getWeb3Contract(web3, ftsoManagerAddress, "FtsoManager");
+    } catch (err: any) {
+        logger.error(`getFtsoManager() | ${err}`)
+        return; // No point in continuing without ftso manager
+    }
+
+    try {
+        let ftsoRegistryAddress = await priceSubmitterWeb3Contract.methods.getFtsoRegistry().call();
+        logger.info(`FtsoRegistry address obtained ${ftsoRegistryAddress}`)
+        ftsoRegistryContract = await getWeb3Contract(web3, ftsoRegistryAddress, "FtsoRegistry");
+    } catch (err: any) {
+        logger.error(`ftsoRegistry() | ${err}`)
+        return; // No point in continuing without ftso registry
+    }
 
     // 2. get ftsos
-    ftsoManagerWeb3Contract.methods.getFtsos().call().then( (lst:any) => {
-
-        ftsosCount = lst.length;
-        for(let ftso of lst) {
-            let contract = getWeb3Contract( web3, ftso, ftsoAbi );
-            contract.methods.symbol().call().then( (symbol:string) => {
-                ftso2symbol.set(ftso, symbol);
-                symbol2ftso.set(symbol, ftso);
-            }).catch((err:any) => logger.error(`symbol() | ${ err }`));
+    try {
+        let voterWhitelisterAddress = await priceSubmitterWeb3Contract.methods.getVoterWhitelister().call();
+        logger.info(`VoterWhitelisterAddress: ${voterWhitelisterAddress}`);
+        voterWhitelisterContract = await getWeb3Contract(web3, voterWhitelisterAddress, "VoterWhitelister");
+        try {
+            let lst = await ftsoManagerWeb3Contract.methods.getFtsos().call();
+            ftsosCount = lst.length;
+            for (let ftso of lst) {
+                let contract = await getWeb3Contract(web3, ftso, "FTSO");
+                try {
+                    let symbol = await contract.methods.symbol().call();
+                    logger.info(`Symbol: ${symbol}`);
+                    ftso2symbol.set(ftso, symbol);
+                    let index = await ftsoRegistryContract.methods.getFtsoIndex(symbol).call();
+                    logger.info(`INDEX: ${index.toString()}`)
+                    symbol2Index.set(symbol, index);
+                    if (conf.whitelist) {
+                        try {
+                            var fnToEncode = voterWhitelisterContract.methods.requestWhitelistingVoter(account.address, index);
+                            await signAndFinalize3("Whitelist", voterWhitelisterContract.options.address, fnToEncode, "2500000");
+                            logger.info(`${symbol} whitelisted.`)
+                        } catch (err: any) {
+                            logger.error(`symbol() | requestWhitelistingVoter() | ${err}`)
+                        }
+                    }
+                } catch (err: any) {
+                    logger.error(`symbol() | ${err}`)
+                }
+            }
+        } catch (err: any) {
+            logger.error(`getFtsos() | ${err}`)
         }
+    } catch (err: any) {
+        logger.error(`priceSubmitter() | ${err}`)
+    }
 
-        // 3. get epochinfo from ftsomanager
-        ftsoManagerWeb3Contract.methods.getPriceEpochConfiguration().call().then( (data:any) => {
-            epochSettings = new EpochSettings( bigNumberToMillis(data[0]), bigNumberToMillis(data[1]), bigNumberToMillis(data[2]) );
-            setupSubmissionAndReveal();
-        }).catch((err:any) => logger.error(`getPriceEpochConfiguration() | ${ err }`));
+    // 3. get epochinfo from ftsomanager
+    try {
+        let data = await ftsoManagerWeb3Contract.methods.getPriceEpochConfiguration().call() as any;
+        epochSettings = new EpochSettings(bigNumberToMillis(data[0]), bigNumberToMillis(data[1]), bigNumberToMillis(data[2]));
+        setupSubmissionAndReveal();
+    } catch (err: any) {
+        logger.error(`getPriceEpochConfiguration() | ${err}`)
+    }
+    
+    setupEvents();
+}
 
-    }).catch((err:any) => logger.error(`getFtsos() | ${ err }`));
-
-}).catch((err:any) => logger.error(`priceSubmitter() | ${ err }`));
+runDataProvider()
