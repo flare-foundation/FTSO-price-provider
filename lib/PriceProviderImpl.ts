@@ -121,6 +121,7 @@ export class WsExchangPriceProvider implements IPriceProvider {
 export class WsLimitedPriceProvider implements IPriceProvider {
 
     private _logger!: any;
+    private _factor!: any;
     private _type!: any;
     private _pair!: string;
     private _exchanges!: any;
@@ -129,8 +130,9 @@ export class WsLimitedPriceProvider implements IPriceProvider {
 
     // exchanges = [ ["bitstamp", "xrp/usd"], ["...", "..."], ... ]
     // type is either 'first' or 'avg'
-    constructor(pair:string, exchanges:any, type:string, logger:any=null) {
+    constructor(pair:string, factor:number, exchanges:any, type:string, logger:any=null) {
         this._logger = logger;
+        this._factor = factor;
         this._type = type
         this._pair = pair;
         this._exchanges = exchanges;
@@ -206,7 +208,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
             let ccxtex = new (ccxt as any)[ p[0] ]( { timeout: 20*1000 } );
             let ticker = await ccxtex.fetchTicker( p[1] );
             if(ticker) {
-                prices.push( ticker.last );
+                prices.push( Number(ticker.last) );
                 if(this.isFirst()) {
                     break;
                 }
@@ -241,7 +243,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         if(prices.length == 0) {
             throw Error(`No price was retrieved for ${ this._pair }!`);
         } else {
-            return prices.reduce((a:any,b:any) => a + b, 0.0) / prices.length;
+            return ( prices.reduce((a:any,b:any) => a + b, 0.0) / prices.length ) * this._factor;
         }
     }
 }
