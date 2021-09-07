@@ -376,7 +376,7 @@ async function runDataProvider() {
             let lst = await ftsoManagerWeb3Contract.methods.getFtsos().call();
             ftsosCount = lst.length;
             for (let ftso of lst) {
-                let contract = await getWeb3Contract(web3, ftso, "FTSO");
+                let contract = await getWeb3Contract(web3, ftso, "Ftso");
                 try {
                     let symbol = await contract.methods.symbol().call();
                     logger.info(`Symbol: ${symbol}`);
