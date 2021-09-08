@@ -184,6 +184,8 @@ export interface FtsoManager extends BaseContract {
 
     lastRewardedFtsoAddress(): NonPayableTransactionObject<string>;
 
+    priceSubmitter(): NonPayableTransactionObject<string>;
+
     proposeGovernance(_governance: string): NonPayableTransactionObject<void>;
 
     proposedGovernance(): NonPayableTransactionObject<string>;
@@ -221,8 +223,6 @@ export interface FtsoManager extends BaseContract {
     ): NonPayableTransactionObject<void>;
 
     setFallbackMode(_fallbackMode: boolean): NonPayableTransactionObject<void>;
-
-    setFlareDaemon(_flareDaemon: string): NonPayableTransactionObject<void>;
 
     setFtsoAsset(
       _ftso: string,

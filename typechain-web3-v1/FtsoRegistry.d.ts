@@ -44,6 +44,8 @@ export interface FtsoRegistry extends BaseContract {
 
     claimGovernance(): NonPayableTransactionObject<void>;
 
+    ftsoManager(): NonPayableTransactionObject<string>;
+
     getAllFtsos(): NonPayableTransactionObject<string[]>;
 
     "getCurrentPrice(string)"(_symbol: string): NonPayableTransactionObject<{
