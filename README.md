@@ -63,3 +63,15 @@ Explanation of parameters in a configuration file
   - `priceProviderParams` - Array of parameters that are passed to constructor of `priceProviderClass`.
 
 **NOTE:** while prices can be submitted to smart contract, the voting power of the account is initially 0, even if the account has large FLR balance. Voting power is obtained by holding wrapped FLRs (Wflr) and/or relevant Fasset tokens. Those can be obtained through `Wflr` contract and relevant Fasset token contracts. See [flare-smart-contracts repo](https://gitlab.com/flarenetwork/flare-smart-contracts) for details.
+
+WsLimitedPriceProvider
+----------------------
+
+We currently use WsLimitedPriceProvider class that implements IPriceProvider and serves as a provider for prices on *Flare Networks*. Structure of configuration file is the same as described above, so one must set priceProviderClass variable to 'WsLimitedPriceProvider' and priceProviderParams to the following list: [pairName, factor, list of tuples[exchange,pair on that exchange], mode]
+
+- pairName: just the name of the pair for which we are submitting the price
+- factor: a number with which we multiply the retrieved price from external exchanges to be then send to *Flare Networks* (usually is 1.0)
+- list of tuples: each tuple consists of two values. First is external exchange name (eg. bitstamp, kraken, binanceus), while the second is the pair name on that exchange (eg. XRPUSD, xrpusd, XRP-USD). List may be arbitrary long and serves as list of priorities, that is first we try to retrieve the price from the first tuple in the list, then from the second, etc. Then depending on the last parameter - mode - we calculate the price and feed it to *Flare Networks*.
+- mode: it can either be 'first' or 'avg'. In the first case it means it returns the price from the first tuple in the list that is possible (if first fails, tries with the second, etc.); in the second case - avg - it retrieves prices from all tuples in the list (some may fail and are thus skipped) and then calculates the average of their prices to be fed to *Flare Networks*
+
+Note that this provider is retrieving prices by subscribing to websockets of the exchanges passed in the list of tuples. If no price can be retrieved from websockets, then it fallbacks to retrieving prices via REST API calls - again prioritized with list of tuples.
