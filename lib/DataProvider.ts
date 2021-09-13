@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import * as fs from 'fs';
 import Web3 from 'web3';
 import { FtsoManager } from '../typechain-web3-v1/FtsoManager';
@@ -14,6 +14,11 @@ import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb
 
 let randomNumber = require("random-number-csprng");
 let yargs = require("yargs");
+
+interface ContractWithSymbol {
+    symbol: string;
+    contract: Contract;
+}
 
 // Args parsing
 let args = yargs
@@ -33,9 +38,10 @@ const provider = getProvider(conf.rpcUrl);
 const web3 = getWeb3(conf.rpcUrl) as Web3;
 const account = getWeb3Wallet(web3, conf.accountPrivateKey);
 
-let priceSubmitterWeb3Contract: PriceSubmitter; 
-let priceSubmitterContract: any; 
+let priceSubmitterWeb3Contract: PriceSubmitter;
+let priceSubmitterContract: any;
 let ftsoManagerWeb3Contract: FtsoManager;
+let ftsoManagerContract: Contract;
 let voterWhitelisterContract: VoterWhitelister;
 let ftsoRegistryContract: FtsoRegistry;
 
@@ -43,6 +49,7 @@ let ftsosCount: number;
 let ftso2symbol: Map<string, string> = new Map();
 let symbol2Index: Map<string, any> = new Map();
 let symbol2dpd: Map<string, DataProviderData> = new Map();
+let ftsoContracts: ContractWithSymbol[] = []
 
 const data: DataProviderData[] = conf.priceProviderList.map((ppc, index) => {
     ppc.priceProviderParams.push(logger);
@@ -191,9 +198,7 @@ async function submitPriceHashes(lst: DataProviderData[]) {
         if (price) {
             let preparedPrice = preparePrice(price, p.decimals);
             let random = await getRandom();
-            // let hash = priceHash2(web3, preparedPrice, random, account.address);
             let hash = priceHash(preparedPrice, random, account.address);
-            // let hash = priceHashOld(preparedPrice, random);
             hashes.push(hash);
             ftsoIndices.push(symbol2Index.get(p.symbol));
             logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
@@ -312,9 +317,11 @@ function setupEvents() {
         for (let ftso of ftsos) {
             let symbol = ftso2symbol.get(ftso)!;
             let p: DataProviderData = symbol2dpd.get(symbol)!;
-            let priceInfo = symbol2epochId2priceInfo.get(symbol)!.get(epochIdStr);
+            let priceInfo = symbol2epochId2priceInfo.get(symbol)?.get(epochIdStr);
             priceInfo?.moveToNextStatus();
-            logger.info(`${p.label} | Price submitted in epoch ${epochIdStr}`);
+            if (p) {
+                logger.info(`${p.label} | Price submitted in epoch ${epochIdStr}`);
+            }
         }
     });
 
@@ -330,17 +337,32 @@ function setupEvents() {
 
             logger.info(`${p.label} | Price revealed in epoch ${epochIdStr}: ${(price / 10 ** p.decimals).toFixed(p.decimals)}$.`);
 
-            let priceInfo = symbol2epochId2priceInfo.get(symbol)!.get(epochIdStr);
+            let priceInfo = symbol2epochId2priceInfo.get(symbol)?.get(epochIdStr);
             if (priceInfo) {
                 priceInfo.moveToNextStatus();
-                logger.info(`${p.label} | Price that was submitted: ${(priceInfo.priceSubmitted / 10 ** 5).toFixed(5)}$`);
-                if (priceInfo.priceSubmitted != (price as number)) {
-                    logger.error(`${p.label} | Price submitted and price revealed are diffent!`);
+                if (p) {
+                    logger.info(`${p.label} | Price that was submitted: ${(priceInfo.priceSubmitted / 10 ** 5).toFixed(5)}$`);
+                    if (priceInfo.priceSubmitted != (price as number)) {
+                        logger.error(`${p.label} | Price submitted and price revealed are diffent!`);
+                    }
                 }
             }
             i++;
         }
     });
+
+    ftsoContracts.forEach(contractWithSymbol => {
+        contractWithSymbol.contract.on("PriceFinalized", async (
+            epochId: any, price: any, rewardedFtso: boolean,
+            lowRewardPrice: any, highRewardPrice: any, finalizationType: any,
+            timestamp: any) => {
+            logger.info(`Price finalized for ${contractWithSymbol.symbol} in epochId ${epochId}: price: ${(price / 10 ** 5).toFixed(5)}$,  finalization type: ${finalizationType}, rewarded: ${rewardedFtso}, low price: ${(lowRewardPrice / 10 ** 5).toFixed(5)}$, high price: ${(highRewardPrice / 10 ** 5).toFixed(5)}$, timestamp: ${timestamp.toString()}`)
+        })
+    })
+
+    ftsoManagerContract.on("RewardEpochFinalized", async (votepowerBlock: any, startBlock: any) => {
+        logger.info(`Reward epoch finalized. New reward epoch starts with block ${startBlock}, uses vote power block ${votepowerBlock}`);
+    })
 }
 
 async function runDataProvider() {
@@ -353,6 +375,7 @@ async function runDataProvider() {
         let ftsoManagerAddress = await priceSubmitterWeb3Contract.methods.getFtsoManager().call();
         logger.info(`FtsoManager address obtained ${ftsoManagerAddress}`)
         ftsoManagerWeb3Contract = await getWeb3Contract(web3, ftsoManagerAddress, "FtsoManager");
+        ftsoManagerContract = await getContract(provider, ftsoManagerAddress, "FtsoManager");
     } catch (err: any) {
         logger.error(`getFtsoManager() | ${err}`)
         return; // No point in continuing without ftso manager
@@ -379,6 +402,10 @@ async function runDataProvider() {
                 let contract = await getWeb3Contract(web3, ftso, "Ftso");
                 try {
                     let symbol = await contract.methods.symbol().call();
+                    ftsoContracts.push({
+                        symbol,
+                        contract: await getContract(provider, ftso, "Ftso")
+                    });
                     logger.info(`Symbol: ${symbol}`);
                     ftso2symbol.set(ftso, symbol);
                     let index = await ftsoRegistryContract.methods.getFtsoIndex(symbol).call();
@@ -412,7 +439,7 @@ async function runDataProvider() {
     } catch (err: any) {
         logger.error(`getPriceEpochConfiguration() | ${err}`)
     }
-    
+
     setupEvents();
 }
 
