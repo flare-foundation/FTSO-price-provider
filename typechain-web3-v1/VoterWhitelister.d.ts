@@ -60,6 +60,10 @@ export interface VoterWhitelister extends BaseContract {
 
     defaultMaxVotersForFtso(): NonPayableTransactionObject<string>;
 
+    ftsoManager(): NonPayableTransactionObject<string>;
+
+    ftsoRegistry(): NonPayableTransactionObject<string>;
+
     getFtsoWhitelistedPriceProviders(
       _ftsoIndex: number | string | BN
     ): NonPayableTransactionObject<string[]>;
@@ -75,6 +79,8 @@ export interface VoterWhitelister extends BaseContract {
     maxVotersForFtso(
       arg0: number | string | BN
     ): NonPayableTransactionObject<string>;
+
+    priceSubmitter(): NonPayableTransactionObject<string>;
 
     proposeGovernance(_governance: string): NonPayableTransactionObject<void>;
 

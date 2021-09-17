@@ -1,6 +1,6 @@
 {
     "accountPrivateKey": "0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122",
-    "rpcUrl": "http://34.141.71.34:9650/ext/bc/C/rpc",
+    "rpcUrl": "http://34.141.108.223:9650/ext/bc/C/rpc",
     "priceSubmitterContractAddress": "0x1000000000000000000000000000000000000003",
     "submitOffset": 170000,
     "revealOffset": 1000,

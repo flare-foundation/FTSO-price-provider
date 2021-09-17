@@ -1,0 +1,84 @@
+{
+    "accountPrivateKey": "0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122",
+    "rpcUrl": "http://127.0.0.1:9650/ext/bc/C/rpc",
+    "priceSubmitterContractAddress": "0x1000000000000000000000000000000000000003",
+    "submitOffset": 170000,
+    "revealOffset": 1000,
+    "whitelist": false,
+    "trusted": true,
+    "gasPrice": "3000000000000",
+    "priceProviderList": [
+        {
+            "symbol": "WNAT",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["XRP/USD", 0.5, [["bitstamp","XRP/USD"],["kraken","XRP/USD"],["binanceus","XRP/USD"],["bittrex","XRP/USD"],["gateio","XRP/USD"]], "first"]
+        },
+        {
+            "symbol": "XRP",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["XRP/USD", 1.0, [["bitstamp","XRP/USD"],["kraken","XRP/USD"],["binanceus","XRP/USD"],["bittrex","XRP/USD"],["gateio","XRP/USD"]], "first"]
+        },
+        {
+            "symbol": "LTC",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["LTC/USD", 1.0, [["bitstamp","LTC/USD"],["kraken","LTC/USD"],["binanceus","LTC/USD"],["coinbasepro","LTC/USD"],["bittrex","LTC/USD"]], "first"]
+        },
+        {
+            "symbol": "XLM",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["XLM/USD", 1.0, [["bitstamp","XLM/USD"],["kraken","XLM/USD"],["binanceus","XLM/USD"],["coinbasepro","XLM/USD"],["bittrex","XLM/USD"]], "first"]
+        },
+        {
+            "symbol": "DOGE",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["DOGE/USD", 1.0, [["kraken","DOGE/USD"],["binanceus","DOGE/USD"],["coinbasepro","DOGE/USD"],["bittrex","DOGE/USD"],["gateio","DOGE/USD"]], "first"]
+        },
+        {
+            "symbol": "ADA",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["ADA/USD", 1.0, [["kraken","ADA/USD"],["binanceus","ADA/USD"],["coinbasepro","ADA/USD"],["bittrex","ADA/USD"]], "first"]
+        },
+        {
+            "symbol": "ALGO",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["ALGO/USD", 1.0, [["bitstamp","ALGO/USD"],["kraken","ALGO/USD"],["binanceus","ALGO/USD"],["coinbasepro","ALGO/USD"],["bittrex","ALGO/USD"]], "first"]
+        },
+        {
+            "symbol": "BCH",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["BCH/USD", 1.0, [["bitstamp","BCH/USD"],["kraken","BCH/USD"],["binanceus","BCH/USD"],["coinbasepro","BCH/USD"],["bittrex","BCH/USD"]], "first"]
+        },
+        {
+            "symbol": "DGB",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["DGB/USD", 1.0, [["bittrex","DGB/USD"],["binance","DGB/USDT"]], "first"]
+        },
+        {
+            "symbol": "BTC",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["BTC/USD", 1.0, [["bitstamp","BTC/USD"],["kraken","BTC/USD"],["binanceus","BTC/USD"],["coinbasepro","BTC/USD"],["bittrex","BTC/USD"]], "first"]
+        },
+        {
+            "symbol": "ETH",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["ETH/USD", 1.0, [["bitstamp","ETH/USD"],["kraken","ETH/USD"],["binanceus","ETH/USD"],["coinbasepro","ETH/USD"],["bittrex","ETH/USD"]], "first"]
+        },
+        {
+            "symbol": "FIL",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["FIL/USD", 1.0, [["kraken","FIL/USD"],["binanceus","FIL/USD"],["coinbasepro","FIL/USD"],["bittrex","FIL/USD"],["gemini","FIL/USD"]], "first"]
+        }
+    ]
+}
