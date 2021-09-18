@@ -130,16 +130,22 @@ function preparePrice(price: number, decimals: number) {
 };
 
 async function signAndFinalize3(label: string, toAddress: string, fnToEncode: any, gas: string = "2500000"): Promise<boolean> {
+    // tle posilja transakcijo
     let nonce = await getNonce();
     var tx = {
         from: account.address,
         to: toAddress,
-        gas: gas,
-        gasPrice: conf.gasPrice,
-        data: fnToEncode.encodeABI(),
+        gas: gas,                       // koliko dovolis 21000 Gas
+        gasPrice: conf.gasPrice,        // koliko stane gas  225G vai
+        data: fnToEncode.encodeABI(),   // posljes kr neki 0x0
         nonce: nonce
     };
     var signedTx = await account.signTransaction(tx);
+
+    // samo 
+        web3.eth.sendSignedTransaction(signedTx.rawTransaction!);
+
+
     try {
         await recordBalance(tx, null);
         let receipt = await waitFinalize3(account.address, () => web3.eth.sendSignedTransaction(signedTx.rawTransaction!));

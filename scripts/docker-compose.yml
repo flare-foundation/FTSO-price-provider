@@ -1,0 +1,10 @@
+version: '3.6'
+
+services:
+
+  heartbeat-daemon:
+    image: evi1m3/heartbeat-daemon:latest
+    restart: always
+
+    ports:
+      - 3000:3000

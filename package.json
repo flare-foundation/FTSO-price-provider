@@ -5,6 +5,7 @@
   "author": "flare",
   "license": "MIT",
   "dependencies": {
+    "@types/glob": "7.1.4",
     "ccxt": "1.50.74",
     "ccxws": "0.43.1",
     "ethers": "5.1.4",
@@ -20,13 +21,19 @@
   "scripts": {
     "artifacts": "ts-node lib/refresh-artifacts.ts",
     "typechain-web3-v1": "yarn typechain --target=web3-v1 --out-dir typechain-web3-v1 \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\" 1> nul",
-    "sync": "yarn artifacts && yarn typechain-web3-v1"
+    "sync": "yarn artifacts && yarn typechain-web3-v1",
+    "build": "yarn tsc",
+    "docker-build": "bash scripts/docker-build.sh",
+    "docker-deploy": "bash scripts/docker-deploy.sh"  
   },
   "devDependencies": {
     "@typechain/web3-v1": "3.1.0",
     "@types/glob": "7.1.4",
     "@types/node": "15.0.2",
+    "@types/web3": "^1.2.2",
+    "@types/yargs": "^17.0.2",
     "rimraf": "3.0.2",
-    "typechain": "5.1.2"
+    "typechain": "5.1.2",
+    "typescript": "4.4.2"
   }
 }
