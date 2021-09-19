@@ -7,7 +7,9 @@ import { PriceSubmitter } from '../typechain-web3-v1/PriceSubmitter';
 import { VoterWhitelister } from '../typechain-web3-v1/VoterWhitelister';
 import { DataProviderConfiguration } from './Configuration';
 import { DataProviderData } from './DataProviderData';
+import { DotEnvExt } from './DotEnvExt';
 import { EpochSettings } from './EpochSettings';
+import { fetchSecret } from './GoogleSecret';
 import { PriceInfo } from './PriceInfo';
 import * as impl from './PriceProviderImpl';
 import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
@@ -35,8 +37,10 @@ let conf: DataProviderConfiguration = JSON.parse(fs.readFileSync(args['config'])
 const logger = getLogger();
 
 const provider = getProvider(conf.rpcUrl);
-const web3 = getWeb3(conf.rpcUrl) as Web3;
-const account = getWeb3Wallet(web3, conf.accountPrivateKey);
+//const web3 = getWeb3(conf.rpcUrl) as Web3;
+//const account = getWeb3Wallet(web3, conf.accountPrivateKey);
+let web3 : any
+let account : any
 
 let priceSubmitterWeb3Contract: PriceSubmitter;
 let priceSubmitterContract: any;
@@ -371,7 +375,56 @@ function setupEvents() {
     })
 }
 
-async function runDataProvider() {
+async function runDataProvider() 
+{
+    DotEnvExt()
+
+    const configData : string = ""
+    let accountPrivateKey : string =""
+
+    if( process.env.NODE_ENV === "production")
+    {
+        logger.info(`Starting Flare Price Provider`)
+
+        if( process.env.PROJECT_SECRET===undefined )
+        {
+            logger.info(`   * account read from .env`)
+            accountPrivateKey = (conf.accountPrivateKey as string)
+        }
+        else
+        {
+            logger.info(`   * account read from secret`)
+            accountPrivateKey = (await fetchSecret( process.env.PROJECT_SECRET as string ) as string)
+        }
+    }
+    else
+    {
+        logger.info(`Starting Flare Price Provider [developer mode]`)
+        logger.info(`   * account read from .env`)
+
+        accountPrivateKey = (conf.accountPrivateKey as string)
+    }
+
+    // rpcUrl from conf
+    let rpcUrl : string = ""
+    if( process.env.RPC_URL!==undefined )
+    {
+        // rpcUrl from .env if it exsists
+        rpcUrl = (process.env.RPC_URL as string)
+        logger.info(`   * rpcUrl from .env '${rpcUrl}'`)
+    }
+    else
+    {
+       rpcUrl = (conf.rpcUrl as string)
+       logger.info(`   * rpcUrl from conf '${rpcUrl}'`)
+    }
+
+
+    web3 = getWeb3(rpcUrl) as Web3;
+    account = getWeb3Wallet(web3, accountPrivateKey );
+
+
+
 
     priceSubmitterWeb3Contract = await getWeb3Contract(web3, conf.priceSubmitterContractAddress, "PriceSubmitter");
     priceSubmitterContract = await getContract(provider, conf.priceSubmitterContractAddress, "PriceSubmitter");

@@ -1,14 +1,14 @@
 #!/bin/bash
 USER=ubuntu
 
-# 4
-SERVER=34.141.58.90
-# 2
+# data-provider-2
 #SERVER=34.107.95.240
+# data-provider-4
+SERVER=34.141.58.90
 
 BRANCH=master
 
-WORKDIR="heartbeat-daemon"
+WORKDIR="flare-price-provider"
 
 
 RED='\033[0;31m'
@@ -21,19 +21,25 @@ NCNORMAL="${NC}$(tput sgr0)"
 
 echo -e "${GREENBOLD}[1/3] Setup server $SERVER${NC}"
 # Enable docker to run witout sudo (on server)
-ssh -n $USER@$SERVER "sudo apt install -y docker-compose"
-ssh -n $USER@$SERVER "sudo groupadd docker; sudo usermod -aG docker $USER; newgrp docker"
+#ssh -n $USER@$SERVER "sudo apt install -y docker-compose"
+#ssh -n $USER@$SERVER "sudo groupadd docker; sudo usermod -aG docker $USER; newgrp docker"
 
 # Create install folder if they do not exist (on server)
 ssh -n $USER@$SERVER "mkdir -p $WORKDIR"
 
 # Copy files to server
 echo -e "${GREENBOLD}[2/3] Copying files on server $SERVER${NC}"
+echo -e "   docker-compose.yml"
 scp scripts/docker-compose.yml $USER@$SERVER:$WORKDIR || { echo 'scp failed' ; exit 1; }
+echo -e "   .deploy.env"
+scp .deploy.env $USER@$SERVER:$WORKDIR || { echo 'scp failed' ; exit 1; }
 
 # Run yarn in $WORKDIR 
 echo -e "${GREENBOLD}[3/3] Installation done - starting docker${NC}"
-ssh -n $USER@$SERVER "cd $WORKDIR; docker-compose up"
+echo -e "   docker pull and restart"
+ssh -n $USER@$SERVER "cd $WORKDIR; docker-compose pull; docker-compose restart"
+echo -e "   docker up"
+ssh -n $USER@$SERVER "cd $WORKDIR; docker-compose up -d"
 
 # Restart the app as a service.
 echo -e "${GREENBOLD}Done.${NC}"

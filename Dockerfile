@@ -13,4 +13,4 @@ RUN yarn build
 
 EXPOSE 3000
 
-CMD node dist/DataProvider.js
+CMD node dist/DataProvider.js -c configs/config.json

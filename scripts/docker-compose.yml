@@ -2,9 +2,11 @@ version: '3.6'
 
 services:
 
-  heartbeat-daemon:
-    image: evi1m3/heartbeat-daemon:latest
+  flare-price-provider:
+    image: flarenetwork/flare-price-provider:latest
     restart: always
+
+    env_file: .deploy.env    
 
     ports:
       - 3000:3000
