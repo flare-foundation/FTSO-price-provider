@@ -1,6 +1,6 @@
 import { BigNumber, Contract } from 'ethers';
 import * as fs from 'fs';
-import Web3 from 'web3';
+//import Web3 from 'web3';
 import { FtsoManager } from '../typechain-web3-v1/FtsoManager';
 import { FtsoRegistry } from '../typechain-web3-v1/FtsoRegistry';
 import { PriceSubmitter } from '../typechain-web3-v1/PriceSubmitter';
@@ -134,21 +134,16 @@ function preparePrice(price: number, decimals: number) {
 };
 
 async function signAndFinalize3(label: string, toAddress: string, fnToEncode: any, gas: string = "2500000"): Promise<boolean> {
-    // tle posilja transakcijo
     let nonce = await getNonce();
     var tx = {
         from: account.address,
         to: toAddress,
-        gas: gas,                       // koliko dovolis 21000 Gas
-        gasPrice: conf.gasPrice,        // koliko stane gas  225G vai
-        data: fnToEncode.encodeABI(),   // posljes kr neki 0x0
+        gas: gas,                       
+        gasPrice: conf.gasPrice,        
+        data: fnToEncode.encodeABI(),   
         nonce: nonce
     };
     var signedTx = await account.signTransaction(tx);
-
-    // samo 
-        web3.eth.sendSignedTransaction(signedTx.rawTransaction!);
-
 
     try {
         await recordBalance(tx, null);
@@ -377,6 +372,8 @@ function setupEvents() {
 
 async function runDataProvider() 
 {
+    let version = 1003
+
     DotEnvExt()
 
     const configData : string = ""
@@ -384,7 +381,7 @@ async function runDataProvider()
 
     if( process.env.NODE_ENV === "production")
     {
-        logger.info(`Starting Flare Price Provider`)
+        logger.info(`Starting Flare Price Provider v${version}`)
 
         if( process.env.PROJECT_SECRET===undefined )
         {
@@ -399,7 +396,7 @@ async function runDataProvider()
     }
     else
     {
-        logger.info(`Starting Flare Price Provider [developer mode]`)
+        logger.info(`Starting Flare Price Provider  v${version} [developer mode]`)
         logger.info(`   * account read from .env`)
 
         accountPrivateKey = (conf.accountPrivateKey as string)
@@ -420,7 +417,7 @@ async function runDataProvider()
     }
 
 
-    web3 = getWeb3(rpcUrl) as Web3;
+    web3 = getWeb3(rpcUrl);
     account = getWeb3Wallet(web3, accountPrivateKey );
 
 

@@ -19,5 +19,6 @@ le**/.classpath
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+/logs
 README.md
 node_modules

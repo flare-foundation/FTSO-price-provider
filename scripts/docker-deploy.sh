@@ -26,6 +26,7 @@ echo -e "${GREENBOLD}[1/3] Setup server $SERVER${NC}"
 
 # Create install folder if they do not exist (on server)
 ssh -n $USER@$SERVER "mkdir -p $WORKDIR"
+ssh -n $USER@$SERVER "mkdir -p /home/ubuntu/logs"
 
 # Copy files to server
 echo -e "${GREENBOLD}[2/3] Copying files on server $SERVER${NC}"

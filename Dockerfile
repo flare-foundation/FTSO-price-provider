@@ -10,6 +10,7 @@ COPY . .
 
 RUN yarn
 RUN yarn build
+RUN mkdir logs
 
 EXPOSE 3000
 

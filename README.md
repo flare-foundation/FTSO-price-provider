@@ -75,3 +75,21 @@ We currently use WsLimitedPriceProvider class that implements IPriceProvider and
 - mode: it can either be 'first' or 'avg'. In the first case it means it returns the price from the first tuple in the list that is possible (if first fails, tries with the second, etc.); in the second case - avg - it retrieves prices from all tuples in the list (some may fail and are thus skipped) and then calculates the average of their prices to be fed to *Flare Networks*
 
 Note that this provider is retrieving prices by subscribing to websockets of the exchanges passed in the list of tuples. If no price can be retrieved from websockets, then it fallbacks to retrieving prices via REST API calls - again prioritized with list of tuples.
+
+Dockerization
+-------------
+
+Docker build is issued with command: 
+*yarn docker-build*
+it runs script `scripts/docker-build.sh`
+
+You can get error on build start:
+`Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`
+in this case start the docker service with command:
+`sudo service docker start`
+
+Docker deploy is issued with command:
+*yarn docker-deploy*
+it runs script `scripts/docker-build.sh`
+
+ATM the deploy address is set to data-provider-4 and can be changed by setting SERVER variable in the script.

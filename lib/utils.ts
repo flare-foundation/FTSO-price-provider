@@ -117,7 +117,7 @@ export function getLogger(label: string | undefined = undefined) {
             new winston.transports.Console(),
             new winston.transports.File({
                 level: 'info',
-                filename: './dataprovider.log'
+                filename: './logs/flare-price-provider.log'
             })
         ]
     });
