@@ -77,7 +77,6 @@ export function getWallet(privateKey: string, provider: any): ethers.Wallet {
 export function waitFinalize3Factory(web3: any) {
     return async function (address: string, func: () => any, delay: number = 1000) {
         let nonce = await web3.eth.getTransactionCount(address)
-        // console.log("Nonce 1:", nonce);
         let res = await func();
         let backoff = 1.5;
         let cnt = 0;
@@ -91,7 +90,6 @@ export function waitFinalize3Factory(web3: any) {
             }
             console.log(`Delay backoff ${delay} (${cnt})`);
         }
-        // console.log("Nonce 2:", await web3.eth.getTransactionCount(address));
         return res;
     }
 }
@@ -111,7 +109,6 @@ export function getLogger(label: string | undefined = undefined) {
                     return `${json.timestamp} - [${json.level}]: ${json.message}`;
                 }
             })
-
         ),
         transports: [
             new winston.transports.Console(),

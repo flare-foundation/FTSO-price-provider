@@ -1,7 +1,6 @@
 import { BigNumber, Contract } from 'ethers';
 import * as fs from 'fs';
 import Web3 from 'web3';
-//import Web3 from 'web3';
 import { FtsoManager } from '../typechain-web3-v1/FtsoManager';
 import { FtsoRegistry } from '../typechain-web3-v1/FtsoRegistry';
 import { PriceSubmitter } from '../typechain-web3-v1/PriceSubmitter';
@@ -33,8 +32,8 @@ let args = yargs
         demand: true
     }).argv;
 
+// Reading configuration
 let conf: DataProviderConfiguration = JSON.parse(fs.readFileSync(args['config']).toString()) as DataProviderConfiguration;
-
 
 class DataProvider {
 
@@ -42,9 +41,9 @@ class DataProvider {
 
     web3!: Web3;
     account: any;
-
     provider: any
 
+    // Contracts
     priceSubmitterWeb3Contract!: PriceSubmitter;
     priceSubmitterContract: any;
     ftsoManagerWeb3Contract!: FtsoManager;
@@ -102,8 +101,6 @@ class DataProvider {
         });
 
     }
-
-
 
     async getNonce(): Promise<string> {
         this.nonceResetCount--;

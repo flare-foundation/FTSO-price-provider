@@ -1,5 +1,8 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+/// This script is used by developers only and it is intended for syncing ABI files from 
+/// flare-smart-contracts repo.
+//////////////////////////////////////////////////////////////////////////////////////////
 
-import glob from 'glob';
 import { relativeContractABIPathForContractName } from './utils';
 const ARTIFACTS_ROOT = "../flare-smart-contracts/artifacts"
 const REQUIRED_CONTRACTS = ["Ftso", "FtsoManager", "PriceSubmitter", "VoterWhitelister", "FtsoRegistry"];

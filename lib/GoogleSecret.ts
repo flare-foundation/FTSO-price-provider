@@ -1,30 +1,22 @@
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 
-export async function fetchSecret(name: string)
-{
-    // console.log( `      * fetchSecret '${name}'`)
-
+export async function fetchSecret(name: string) {
     try {
-
         const client = new SecretManagerServiceClient();
-        const [version] = await client.accessSecretVersion({name});
+        const [version] = await client.accessSecretVersion({ name });
 
         const payload = version.payload?.data?.toString();
 
-        if( !payload )
-        {
+        if (!payload) {
             // throw new Error(`Failed to fetch secret "${name}"`);
-            console.log( `      *** ERROR: failed to fetch secret "${name}"` )
-
+            console.log(`      *** ERROR: failed to fetch secret "${name}"`)
             return "";
         }
-
-        // console.log( `secret is "${payload}"` )
-
+        
         return payload
     }
-    catch( error ) {
-        console.log( `      *** ERROR: failed to fetch secret "${name}"   ${error}` )
+    catch (error) {
+        console.log(`      *** ERROR: failed to fetch secret "${name}"   ${error}`)
     }
 
     return undefined
