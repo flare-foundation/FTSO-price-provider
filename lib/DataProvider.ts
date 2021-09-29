@@ -377,7 +377,7 @@ class DataProvider {
             accountPrivateKey = (await fetchSecret(process.env.PROJECT_SECRET as string) as string)
         } else {
             this.logger.info(`Starting Flare Price Provider  v${version} [developer mode]`)
-            this.logger.info(`   * account read from .env`)
+            this.logger.info(`   * account read from config`)
 
             accountPrivateKey = (conf.accountPrivateKey as string)
         }
