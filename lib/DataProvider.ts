@@ -367,19 +367,15 @@ class DataProvider {
         const configData: string = ""
         let accountPrivateKey: string = ""
 
-        if (process.env.NODE_ENV === "production") {
-            this.logger.info(`Starting Flare Price Provider v${version}`)
+        this.logger.info(`Starting Flare Price Provider v${version}`)
 
-            if (process.env.PROJECT_SECRET) {
-                this.logger.info(`   * account read from .env`)
-                accountPrivateKey = (conf.accountPrivateKey as string)
-            }
-            else {
-                this.logger.info(`   * account read from secret`)
-                accountPrivateKey = (await fetchSecret(process.env.PROJECT_SECRET as string) as string)
-            }
-        }
-        else {
+        if (process.env.PROJECT_SECRET) {
+            this.logger.info(`   * account read from .env`)
+            accountPrivateKey = (conf.accountPrivateKey as string)
+        } else if (process.env.USE_GCP_SECRET) {
+            this.logger.info(`   * account read from secret`)
+            accountPrivateKey = (await fetchSecret(process.env.PROJECT_SECRET as string) as string)
+        } else {
             this.logger.info(`Starting Flare Price Provider  v${version} [developer mode]`)
             this.logger.info(`   * account read from .env`)
 
