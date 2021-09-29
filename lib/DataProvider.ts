@@ -370,7 +370,7 @@ class DataProvider {
         if (process.env.NODE_ENV === "production") {
             this.logger.info(`Starting Flare Price Provider v${version}`)
 
-            if (process.env.PROJECT_SECRET === undefined) {
+            if (process.env.PROJECT_SECRET) {
                 this.logger.info(`   * account read from .env`)
                 accountPrivateKey = (conf.accountPrivateKey as string)
             }
