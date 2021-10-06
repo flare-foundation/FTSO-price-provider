@@ -117,8 +117,8 @@ class DataProvider {
         this.nonce = undefined;
     }
 
-    async getRandom(minnum: number = 0, maxnum: number = 10 ** 5) {
-        return await randomNumber(minnum, maxnum);
+    getRandom(minnum: number = 0, maxnum: number = 10 ** 5) {
+        return Web3.utils.toBN(Web3.utils.randomHex(32));
     };
 
     preparePrice(price: number, decimals: number) {
@@ -190,7 +190,7 @@ class DataProvider {
             let price = await p.priceProvider.getPrice();
             if (price) {
                 let preparedPrice = this.preparePrice(price, p.decimals);
-                let random = await this.getRandom();
+                let random = this.getRandom();
                 let hash = priceHash(preparedPrice, random, this.account.address);
                 hashes.push(hash);
                 ftsoIndices.push(this.symbol2Index.get(p.symbol));

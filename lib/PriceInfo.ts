@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 export class PriceInfo {
     private SUBMITTING_STATUS = "SUBMITTING";
     private SUBMITTED_STATUS = "SUBMITTED";
@@ -8,10 +9,10 @@ export class PriceInfo {
     private _epochId!: string;
     private _priceRevealed!: number;
     private _priceSubmitted!: number;
-    private _random!: number;
+    private _random!: BN;
     private _status: string = this.SUBMITTING_STATUS;
 
-    constructor(epochId: string, priceSubmitted: number, random: number) {
+    constructor(epochId: string, priceSubmitted: number, random: BN) {
         this._epochId = epochId;
         this._priceSubmitted = priceSubmitted;
         this._random = random;
@@ -37,7 +38,7 @@ export class PriceInfo {
         this._priceRevealed = value;
     }
 
-    public get random(): number {
+    public get random(): BN {
         return this._random;
     }
 
