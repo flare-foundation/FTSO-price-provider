@@ -2,7 +2,11 @@
 
 The repository contains an example of *Flare Network* price provider implementation. 
 
-*Flare Networks* encourages data providers to develop their own custom data provider code, mainly due to the competitive nature of price provision in pursuit of Flare Time Series Oracle rewards.  
+*Flare Networks* encourages data providers to develop their own custom data provider code, mainly due to the competitive nature of price provision in pursuit of Flare Time Series Oracle (FTSO) rewards.  
+
+## DISCLAIMER
+
+This is an example implementation of a data provider. It uses the library CCXT to obtain prices from certain exchanges. Note that data signal providing for Songbird FTSOs has become a highly competitive business, hence providing the winning prices usually involves more then just sending some prices from exchanges. The software can be freely used subject to the attached license.
 
 ## How it works?
 
@@ -127,8 +131,4 @@ Docker deploy is issued with command:
 which runs the script `scripts/docker-build.sh`
 
 Deployment address is defined by setting SERVER variable in the script.
-
-## DISCLAIMER
-
-This is an example implementation of a data provider. It uses the library CCXT to obtain prices from certain exchanges. Note that data signal providing for Songbird FTSOs has become a highly competitive business, hence providing the winning prices usually involves more then just sending some prices from exchanges. The software can be freely used subject to the attached license.
 
