@@ -127,3 +127,8 @@ Docker deploy is issued with command:
 which runs the script `scripts/docker-build.sh`
 
 Deployment address is defined by setting SERVER variable in the script.
+
+## DISCLAIMER
+
+This is an example implementation of a data provider. It uses the library CCXT to obtain prices from certain exchanges. Note that data signal providing for Songbird FTSOs has become a highly competitive business, hence providing the winning prices usually involves more then just sending some prices from exchanges. The software can be freely used subject to the attached license.
+
