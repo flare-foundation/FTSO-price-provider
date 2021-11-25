@@ -360,7 +360,7 @@ class DataProvider {
     }
 
     async runDataProvider() {
-        let version = 1004
+        let version = 1005
 
         DotEnvExt()
 
@@ -369,11 +369,11 @@ class DataProvider {
 
         this.logger.info(`Starting Flare Price Provider v${version}`)
 
-        if (process.env.PROJECT_SECRET) {
+        if ( process.env.PROJECT_SECRET===undefined ) {
             this.logger.info(`   * account read from .env`)
             accountPrivateKey = (conf.accountPrivateKey as string)
-        } else if (process.env.USE_GCP_SECRET) {
-            this.logger.info(`   * account read from secret`)
+        } else if (process.env.PROJECT_SECRET!==undefined) {
+            this.logger.info(`   * account read from secret '${process.env.PROJECT_SECRET}'`)
             accountPrivateKey = (await fetchSecret(process.env.PROJECT_SECRET as string) as string)
         } else {
             this.logger.info(`Starting Flare Price Provider  v${version} [developer mode]`)
