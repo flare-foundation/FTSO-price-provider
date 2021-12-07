@@ -1,0 +1,23 @@
+version: '3.6'
+
+services:
+
+  flare-price-provider:
+    image: flarenetwork/flare-price-provider:latest
+    restart: always
+
+    env_file: .deploy.env    
+
+    volumes:
+      - type: volume
+        source: mydata
+        target: /data
+      - type: bind
+        source: /home/ubuntu/logs
+        target: /usr/app/logs    
+
+    ports:
+      - 3000:3000
+
+volumes:
+  mydata:
