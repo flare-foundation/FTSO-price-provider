@@ -4,9 +4,14 @@ The repository contains an example of *Flare Network* price provider implementat
 
 *Flare Networks* encourages data providers to develop their own custom data provider code, mainly due to the competitive nature of price provision in pursuit of Flare Time Series Oracle (FTSO) rewards.  
 
+### Comments?
+Please open a pull request for improvemnts.
+Please open an issue for any questions.
+
 ## DISCLAIMER
 
 This is an example implementation of a data provider. It uses the library CCXT to obtain prices from certain exchanges. Note that data signal providing for Songbird FTSOs has become a highly competitive business, hence providing the winning prices usually involves more then just sending some prices from exchanges. The software can be freely used subject to the attached license.
+
 
 ## How it works?
 
