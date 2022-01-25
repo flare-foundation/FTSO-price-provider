@@ -369,10 +369,10 @@ class DataProvider {
 
         this.logger.info(`Starting Flare Price Provider v${version}`)
 
-        if ( process.env.PROJECT_SECRET===undefined ) {
+        if (process.env.PROJECT_SECRET === undefined) {
             this.logger.info(`   * account read from .env`)
             accountPrivateKey = (conf.accountPrivateKey as string)
-        } else if (process.env.PROJECT_SECRET!==undefined) {
+        } else if (process.env.PROJECT_SECRET !== undefined) {
             this.logger.info(`   * account read from secret '${process.env.PROJECT_SECRET}'`)
             accountPrivateKey = (await fetchSecret(process.env.PROJECT_SECRET as string) as string)
         } else {
@@ -425,6 +425,14 @@ class DataProvider {
             let voterWhitelisterAddress = await this.priceSubmitterWeb3Contract.methods.getVoterWhitelister().call();
             this.logger.info(`VoterWhitelisterAddress: ${voterWhitelisterAddress}`);
             this.voterWhitelisterContract = await getWeb3Contract(this.web3, voterWhitelisterAddress, "VoterWhitelister");
+
+            // if file .whitelisted does not exists then enable whitelisting
+            if( !fs.existsSync(".whitelisted") )
+            {
+                conf.whitelist = true;                
+                this.logger.info(`whitelisting enabled`);
+            }
+
             try {
                 let lst = await this.ftsoManagerWeb3Contract.methods.getFtsos().call();
                 this.ftsosCount = lst.length;
@@ -453,6 +461,12 @@ class DataProvider {
                     } catch (err: any) {
                         this.logger.error(`symbol() | ${err}`)
                     }
+                }
+
+                if (conf.whitelist) {
+                    // if whitelisting was done then create .whitelisted file
+                    fs.writeFileSync(".whitelisted", "done");
+                    this.logger.info(`whitelisting completed`);
                 }
             } catch (err: any) {
                 this.logger.error(`getFtsos() | ${err}`)
