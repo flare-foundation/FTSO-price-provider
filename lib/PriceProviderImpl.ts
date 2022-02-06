@@ -57,7 +57,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
             let ex = p[0];
             let market = p[1];
             this._name2client[ex] = new (ccxws as any)[ex]();
-            this.loadMarketsAndSubscribe(ex, market);
+            this.subscribe(ex, market);
         }
     }
 
@@ -98,22 +98,31 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         client.subscribeTicker(marketObj);
     }
 
-    loadMarketsAndSubscribe(ex: string, pair: string): void {
-        let self = this;
-        const ccxtex = new (ccxt as any)[ex]({ timeout: 20 * 1000 });
+    marketId(clientStr:string, base:string, quote:string):string {
+        if(clientStr == 'kucoin' || clientStr == 'okex' || clientStr == 'coinbasepro') {
+            return `${base.toUpperCase()}-${quote.toUpperCase()}`;
+        } else if(clientStr == 'bitstamp' || clientStr == 'huobipro') {
+            return (base + quote).toLowerCase();
+        } else if(clientStr == 'gateio') {
+            return `${base.toUpperCase()}_${quote.toUpperCase()}`;
+        } else if(clientStr == 'ftx') {
+            return `${base.toUpperCase()}/${quote.toUpperCase()}`;
+        } else if( clientStr == 'kraken' && base == 'BTC') {
+            return `XBT${quote.toUpperCase()}`;
+        } else if(clientStr == 'kraken' && base == 'DOGE') {
+            return `XDG${quote.toUpperCase()}`;
+        } else {
+            return (base + quote).toUpperCase();
+        }
+    }
 
-        ccxtex.loadMarkets().then((data: any) => {
-            let market = data[pair];
+    subscribe(ex: string, pair: string): void {
+        let tmp:any = pair.split("/")
+        let base:string = tmp[0];
+        let quote:string = tmp[1];
 
-
-            if (market) {
-                let marketObj = { id: market.id, base: market.base, quote: market.quote, type: 'spot' };
-                self.subscribeTo(ex, pair, marketObj);
-            } else {
-                self._logger.error(`Bad market: ${pair}. Not supported by ${ex}.`)
-                throw Error(`Bad market: ${pair}. Not supported by ${ex}.`);
-            }
-        });
+        let marketObj = { id: this.marketId(ex, base, quote), base, quote, type: 'spot' };
+        this.subscribeTo(ex, pair, marketObj);
     }
 
     async getRestPrice(): Promise<number> {
@@ -136,8 +145,8 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         let prices = [];
         for (let ex of this._exchanges.map((x: any) => x[0])) {
             let priceInfo = this._ex2priceInfo[ex];
-            // price should not be older than 10s!!! TODO: parameter maybe!
-            if (priceInfo && priceInfo.price && priceInfo.priceTime + 10 * 1000 >= new Date().getTime()) {
+            // price should not be older than 30s!!! TODO: parameter maybe!
+            if (priceInfo && priceInfo.price && priceInfo.priceTime + 30 * 1000 >= new Date().getTime()) {
                 prices.push(Number(priceInfo.price));
                 if (this.isFirst()) {
                     break;
