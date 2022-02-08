@@ -64,6 +64,8 @@ export interface VoterWhitelister extends BaseContract {
 
     ftsoRegistry(): NonPayableTransactionObject<string>;
 
+    getAddressUpdater(): NonPayableTransactionObject<string>;
+
     getFtsoWhitelistedPriceProviders(
       _ftsoIndex: number | string | BN
     ): NonPayableTransactionObject<string[]>;
@@ -107,11 +109,6 @@ export interface VoterWhitelister extends BaseContract {
       _ftsoIndex: number | string | BN
     ): NonPayableTransactionObject<void>;
 
-    setContractAddresses(
-      _ftsoRegistry: string,
-      _ftsoManager: string
-    ): NonPayableTransactionObject<void>;
-
     setDefaultMaxVotersForFtso(
       _defaultMaxVotersForFtso: number | string | BN
     ): NonPayableTransactionObject<void>;
@@ -122,6 +119,11 @@ export interface VoterWhitelister extends BaseContract {
     ): NonPayableTransactionObject<void>;
 
     transferGovernance(_governance: string): NonPayableTransactionObject<void>;
+
+    updateContractAddresses(
+      _contractNameHashes: (string | number[])[],
+      _contractAddresses: string[]
+    ): NonPayableTransactionObject<void>;
   };
   events: {
     GovernanceProposed(cb?: Callback<GovernanceProposed>): EventEmitter;

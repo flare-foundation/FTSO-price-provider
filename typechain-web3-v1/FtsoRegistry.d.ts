@@ -46,6 +46,8 @@ export interface FtsoRegistry extends BaseContract {
 
     ftsoManager(): NonPayableTransactionObject<string>;
 
+    getAddressUpdater(): NonPayableTransactionObject<string>;
+
     getAllFtsos(): NonPayableTransactionObject<string[]>;
 
     "getCurrentPrice(string)"(_symbol: string): NonPayableTransactionObject<{
@@ -130,11 +132,12 @@ export interface FtsoRegistry extends BaseContract {
 
     removeFtso(_ftso: string): NonPayableTransactionObject<void>;
 
-    setFtsoManagerAddress(
-      _ftsoManager: string
-    ): NonPayableTransactionObject<void>;
-
     transferGovernance(_governance: string): NonPayableTransactionObject<void>;
+
+    updateContractAddresses(
+      _contractNameHashes: (string | number[])[],
+      _contractAddresses: string[]
+    ): NonPayableTransactionObject<void>;
   };
   events: {
     GovernanceProposed(cb?: Callback<GovernanceProposed>): EventEmitter;

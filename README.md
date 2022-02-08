@@ -18,10 +18,10 @@ Prices are always submitted in USD. Submitting (or sometimes called *committing*
 - price (an integer where a certain number of least significant digits are considered as decimals, currently set to 5). If the price of an asset is `123.454321` USD, the submitted price should be `12345432`.
 - randomly generated large number (in range of `uint256`)
 
-Commit is done in a modified commit-reveal scheme. The hash for commit is calculated as `keccak256(abi.encode(price, randomNumber, addressOfVoter))`. This is can be done for all currencies. Then the contract function `PriceSubmitter.submitPriceHashes(epochId, ftosIndices, hashes)` is called with the list of currency indices `ftsoIndices` and a corresponding list of `hashes`. If `epochId` is incorrect, the call gets reverted.
+Commit is done in a modified commit-reveal scheme. The hash for commit is calculated as `keccak256(abi.encode(ftsoIndices, prices, randomNumber, addressOfVoter))` where `ftsoIndices` is the list of currency indices. This is done for all currencies at once. Then the contract function `PriceSubmitter.submitHash(epochId, hash)` is called with the calculated `hash`. If `epochId` is incorrect, the call gets reverted.
 
 When price epoch ends, reveal epoch starts and if a voter submitted the price for the just expired price epoch, the voter can reveal price by calling 
-`PriceSubmitter.revealPrices(epochId, ftsoIndices, prices, randoms)` and thus disclose and provide actual prices.
+`PriceSubmitter.revealPrices(epochId, ftsoIndices, prices, random)` and thus disclose and provide actual prices.
 When the reveal epoch ends, all revealed prices are collected and used for the calculation of the weighted median price.
  
 ### Whitelisting

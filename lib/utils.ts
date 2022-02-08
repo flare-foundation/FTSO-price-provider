@@ -124,8 +124,8 @@ export function bigNumberToMillis(num: number) {
     return BigNumber.from(num * 1000);
 }
 
-export function priceHash(price: number | BN | BigNumber, random: number | BN | BigNumber, address: string): string {
-    return ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["uint256", "uint256", "address"], [price.toString(), random.toString(), address]))
+export function priceHash(ftsoIndices: (string | number | BN | BigNumber)[], prices: (string | number | BN | BigNumber)[], random: number | BN | BigNumber, address: string): string {
+    return ethers.utils.keccak256(Web3.eth.abi.encodeParameters([ "uint256[]", "uint256[]", "uint256", "address" ], [ ftsoIndices, prices, random, address ]));
 }
 
 export async function relativeContractABIPathForContractName(name: string, artifactsRoot = "artifacts"): Promise<string> {

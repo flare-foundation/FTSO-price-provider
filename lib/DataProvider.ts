@@ -165,14 +165,15 @@ class DataProvider {
         return index >= 0 && ((bitmask >> index) % 2) == 1;
     }
 
-    async submitPriceHashes(lst: DataProviderData[]) {
+    async submitPriceHash(lst: DataProviderData[]) {
         this.logger.info("SUBMITTING")
         let epochId = this.epochSettings.getCurrentEpochId().toString();
         let realEpochData = await this.ftsoManagerWeb3Contract.methods.getCurrentPriceEpochData().call()
-        this.logger.info(`Internal epoch id: ${epochId}, real ${realEpochData.priceEpochId}`)
+        this.logger.info(`Internal epoch id: ${epochId}, real ${realEpochData._priceEpochId}`)
 
-        let hashes = [];
-        let ftsoIndices = []
+        let prices = [];
+        let ftsoIndices = [];
+        let random = this.getRandom();
         this.currentBitmask = await this.priceSubmitterWeb3Contract.methods.voterWhitelistBitmap(this.account.address).call() as any;
         this.logger.info(`Current bitmask: ${this.currentBitmask.toString(2)}`);
 
@@ -190,9 +191,7 @@ class DataProvider {
             let price = await p.priceProvider.getPrice();
             if (price) {
                 let preparedPrice = this.preparePrice(price, p.decimals);
-                let random = this.getRandom();
-                let hash = priceHash(preparedPrice, random, this.account.address);
-                hashes.push(hash);
+                prices.push(preparedPrice);
                 ftsoIndices.push(this.symbol2Index.get(p.symbol));
                 this.logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
                 this.symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
@@ -201,9 +200,10 @@ class DataProvider {
             }
         }
 
-        if (hashes.length > 0) {
+        if (prices.length > 0) {
             this.logger.info(`Ftso indices: ${ftsoIndices.map(x => x.toString()).toString()}`)
-            var fnToEncode = this.priceSubmitterWeb3Contract.methods.submitPriceHashes(epochId, ftsoIndices, hashes);
+            let hash = priceHash(ftsoIndices, prices, random, this.account.address);
+            var fnToEncode = this.priceSubmitterWeb3Contract.methods.submitHash(epochId, hash);
             await this.signAndFinalize3("Submit prices", this.priceSubmitterWeb3Contract.options.address, fnToEncode, "2500000");
         }
     }
@@ -216,7 +216,7 @@ class DataProvider {
             // let addresses = [];
             let ftsoIndices = [];
             let prices = [];
-            let randoms = [];
+            let random = Web3.utils.toBN('0');
 
             for (let p of lst) {
                 p = p as DataProviderData;
@@ -232,12 +232,12 @@ class DataProvider {
                     priceInfo.moveToNextStatus();
                     ftsoIndices.push(this.symbol2Index.get(p.symbol));
                     prices.push(priceInfo.priceSubmitted);
-                    randoms.push(priceInfo.random);
+                    random = priceInfo.random;
                 }
             }
 
             if (prices.length > 0) {
-                var fnToEncode = this.priceSubmitterWeb3Contract.methods.revealPrices(epochIdStr, ftsoIndices, prices, randoms);
+                var fnToEncode = this.priceSubmitterWeb3Contract.methods.revealPrices(epochIdStr, ftsoIndices, prices, random);
                 await this.signAndFinalize3("Reveal prices", this.priceSubmitterWeb3Contract.options.address, fnToEncode, "2500000");
                 break;
             }
@@ -291,7 +291,7 @@ class DataProvider {
         if (diffSubmit > submitPeriod - conf.submitOffset && this.ftso2symbol.size >= this.ftsosCount) {
             setTimeout(() => {
                 this.logger.info(`Submit in ${diffSubmit - submitPeriod + conf.submitOffset}ms`)
-                this.execute(async () => { await this.submitPriceHashes(this.data); });
+                this.execute(async () => { await this.submitPriceHash(this.data); });
             }, diffSubmit - submitPeriod + conf.submitOffset);
 
             setTimeout(() => {
@@ -304,22 +304,13 @@ class DataProvider {
     }
 
     setupEvents() {
-        this.priceSubmitterContract.on("PriceHashesSubmitted", async (submitter: string, epochId: any, ftsos: string[], hashes: string[], timestamp: any) => {
+        this.priceSubmitterContract.on("HashSubmitted", async (submitter: string, epochId: any, hash: string, timestamp: any) => {
             if (submitter != this.account.address) return;
 
-            let epochIdStr = epochId.toString();
-            for (let ftso of ftsos) {
-                let symbol = this.ftso2symbol.get(ftso)!;
-                let p: DataProviderData = this.symbol2dpd.get(symbol)!;
-                let priceInfo = this.symbol2epochId2priceInfo.get(symbol)?.get(epochIdStr);
-                priceInfo?.moveToNextStatus();
-                if (p) {
-                    this.logger.info(`${p.label} | Price submitted in epoch ${epochIdStr}`);
-                }
-            }
+            this.logger.info(`Prices submitted in epoch ${epochId.toString()}`);
         });
 
-        this.priceSubmitterContract.on("PricesRevealed", async (voter: string, epochId: any, ftsos: string[], prices: any[], randoms: string[], timestamp: any) => {
+        this.priceSubmitterContract.on("PricesRevealed", async (voter: string, epochId: any, ftsos: string[], prices: any[], random: string, timestamp: any) => {
             if (voter != this.account.address) return;
 
             let epochIdStr = epochId.toString();

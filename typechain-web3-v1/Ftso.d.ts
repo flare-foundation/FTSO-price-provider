@@ -55,21 +55,10 @@ export type PriceFinalized = ContractEventLog<{
   5: string;
   6: string;
 }>;
-export type PriceHashSubmitted = ContractEventLog<{
-  submitter: string;
-  epochId: string;
-  hash: string;
-  timestamp: string;
-  0: string;
-  1: string;
-  2: string;
-  3: string;
-}>;
 export type PriceRevealed = ContractEventLog<{
   voter: string;
   epochId: string;
   price: string;
-  random: string;
   timestamp: string;
   votePowerNat: string;
   votePowerAsset: string;
@@ -79,7 +68,6 @@ export type PriceRevealed = ContractEventLog<{
   3: string;
   4: string;
   5: string;
-  6: string;
 }>;
 
 export interface Ftso extends BaseContract {
@@ -93,9 +81,9 @@ export interface Ftso extends BaseContract {
     ASSET_PRICE_USD_DECIMALS(): NonPayableTransactionObject<string>;
 
     activateFtso(
-      _firstEpochStartTime: number | string | BN,
-      _submitPeriod: number | string | BN,
-      _revealPeriod: number | string | BN
+      _firstEpochStartTs: number | string | BN,
+      _submitPeriodSeconds: number | string | BN,
+      _revealPeriodSeconds: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     active(): NonPayableTransactionObject<boolean>;
@@ -103,10 +91,6 @@ export interface Ftso extends BaseContract {
     assetFtsos(arg0: number | string | BN): NonPayableTransactionObject<string>;
 
     assets(arg0: number | string | BN): NonPayableTransactionObject<string>;
-
-    averageFinalizePriceEpoch(
-      _epochId: number | string | BN
-    ): NonPayableTransactionObject<void>;
 
     configureEpochs(
       _maxVotePowerNatThresholdFraction: number | string | BN,
@@ -136,6 +120,10 @@ export interface Ftso extends BaseContract {
       5: string;
       6: string[];
     }>;
+
+    fallbackFinalizePriceEpoch(
+      _epochId: number | string | BN
+    ): NonPayableTransactionObject<void>;
 
     finalizePriceEpoch(
       _epochId: number | string | BN,
@@ -184,9 +172,9 @@ export interface Ftso extends BaseContract {
     ): NonPayableTransactionObject<string>;
 
     getPriceEpochConfiguration(): NonPayableTransactionObject<{
-      _firstEpochStartTime: string;
-      _submitPeriod: string;
-      _revealPeriod: string;
+      _firstEpochStartTs: string;
+      _submitPeriodSeconds: string;
+      _revealPeriodSeconds: string;
       0: string;
       1: string;
       2: string;
@@ -239,7 +227,6 @@ export interface Ftso extends BaseContract {
       _voter: string,
       _epochId: number | string | BN,
       _price: number | string | BN,
-      _random: number | string | BN,
       _voterWNatVP: number | string | BN
     ): NonPayableTransactionObject<void>;
 
@@ -249,12 +236,6 @@ export interface Ftso extends BaseContract {
 
     setVotePowerBlock(
       _votePowerBlock: number | string | BN
-    ): NonPayableTransactionObject<void>;
-
-    submitPriceHashSubmitter(
-      _sender: string,
-      _epochId: number | string | BN,
-      _hash: string | number[]
     ): NonPayableTransactionObject<void>;
 
     symbol(): NonPayableTransactionObject<string>;
@@ -289,12 +270,6 @@ export interface Ftso extends BaseContract {
       cb?: Callback<PriceFinalized>
     ): EventEmitter;
 
-    PriceHashSubmitted(cb?: Callback<PriceHashSubmitted>): EventEmitter;
-    PriceHashSubmitted(
-      options?: EventOptions,
-      cb?: Callback<PriceHashSubmitted>
-    ): EventEmitter;
-
     PriceRevealed(cb?: Callback<PriceRevealed>): EventEmitter;
     PriceRevealed(
       options?: EventOptions,
@@ -326,13 +301,6 @@ export interface Ftso extends BaseContract {
     event: "PriceFinalized",
     options: EventOptions,
     cb: Callback<PriceFinalized>
-  ): void;
-
-  once(event: "PriceHashSubmitted", cb: Callback<PriceHashSubmitted>): void;
-  once(
-    event: "PriceHashSubmitted",
-    options: EventOptions,
-    cb: Callback<PriceHashSubmitted>
   ): void;
 
   once(event: "PriceRevealed", cb: Callback<PriceRevealed>): void;

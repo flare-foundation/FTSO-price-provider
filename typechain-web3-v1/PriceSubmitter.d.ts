@@ -31,30 +31,28 @@ export type GovernanceUpdated = ContractEventLog<{
   0: string;
   1: string;
 }>;
-export type PriceHashesSubmitted = ContractEventLog<{
+export type HashSubmitted = ContractEventLog<{
   submitter: string;
   epochId: string;
-  ftsos: string[];
-  hashes: string[];
+  hash: string;
   timestamp: string;
   0: string;
   1: string;
-  2: string[];
-  3: string[];
-  4: string;
+  2: string;
+  3: string;
 }>;
 export type PricesRevealed = ContractEventLog<{
   voter: string;
   epochId: string;
   ftsos: string[];
   prices: string[];
-  randoms: string[];
+  random: string;
   timestamp: string;
   0: string;
   1: string;
   2: string[];
   3: string[];
-  4: string[];
+  4: string;
   5: string;
 }>;
 
@@ -66,11 +64,23 @@ export interface PriceSubmitter extends BaseContract {
   ): PriceSubmitter;
   clone(): PriceSubmitter;
   methods: {
+    MINIMAL_RANDOM(): NonPayableTransactionObject<string>;
+
+    RANDOM_EPOCH_CYCLIC_BUFFER_SIZE(): NonPayableTransactionObject<string>;
+
     claimGovernance(): NonPayableTransactionObject<void>;
+
+    getAddressUpdater(): NonPayableTransactionObject<string>;
+
+    getCurrentRandom(): NonPayableTransactionObject<string>;
 
     getFtsoManager(): NonPayableTransactionObject<string>;
 
     getFtsoRegistry(): NonPayableTransactionObject<string>;
+
+    getRandom(
+      _epochId: number | string | BN
+    ): NonPayableTransactionObject<string>;
 
     getTrustedAddresses(): NonPayableTransactionObject<string[]>;
 
@@ -90,26 +100,28 @@ export interface PriceSubmitter extends BaseContract {
       _epochId: number | string | BN,
       _ftsoIndices: (number | string | BN)[],
       _prices: (number | string | BN)[],
-      _randoms: (number | string | BN)[]
+      _random: number | string | BN
     ): NonPayableTransactionObject<void>;
 
-    setContractAddresses(
-      _ftsoRegistry: string,
-      _voterWhitelister: string,
-      _ftsoManager: string
+    setAddressUpdater(
+      _addressUpdater: string
     ): NonPayableTransactionObject<void>;
 
     setTrustedAddresses(
       _trustedAddresses: string[]
     ): NonPayableTransactionObject<void>;
 
-    submitPriceHashes(
+    submitHash(
       _epochId: number | string | BN,
-      _ftsoIndices: (number | string | BN)[],
-      _hashes: (string | number[])[]
+      _hash: string | number[]
     ): NonPayableTransactionObject<void>;
 
     transferGovernance(_governance: string): NonPayableTransactionObject<void>;
+
+    updateContractAddresses(
+      _contractNameHashes: (string | number[])[],
+      _contractAddresses: string[]
+    ): NonPayableTransactionObject<void>;
 
     voterWhitelistBitmap(_voter: string): NonPayableTransactionObject<string>;
 
@@ -136,10 +148,10 @@ export interface PriceSubmitter extends BaseContract {
       cb?: Callback<GovernanceUpdated>
     ): EventEmitter;
 
-    PriceHashesSubmitted(cb?: Callback<PriceHashesSubmitted>): EventEmitter;
-    PriceHashesSubmitted(
+    HashSubmitted(cb?: Callback<HashSubmitted>): EventEmitter;
+    HashSubmitted(
       options?: EventOptions,
-      cb?: Callback<PriceHashesSubmitted>
+      cb?: Callback<HashSubmitted>
     ): EventEmitter;
 
     PricesRevealed(cb?: Callback<PricesRevealed>): EventEmitter;
@@ -165,11 +177,11 @@ export interface PriceSubmitter extends BaseContract {
     cb: Callback<GovernanceUpdated>
   ): void;
 
-  once(event: "PriceHashesSubmitted", cb: Callback<PriceHashesSubmitted>): void;
+  once(event: "HashSubmitted", cb: Callback<HashSubmitted>): void;
   once(
-    event: "PriceHashesSubmitted",
+    event: "HashSubmitted",
     options: EventOptions,
-    cb: Callback<PriceHashesSubmitted>
+    cb: Callback<HashSubmitted>
   ): void;
 
   once(event: "PricesRevealed", cb: Callback<PricesRevealed>): void;
