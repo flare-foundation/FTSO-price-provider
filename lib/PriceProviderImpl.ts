@@ -4,7 +4,6 @@ import { logger } from 'ethers';
 import * as fs from 'fs';
 import { IPriceProvider } from "./IPriceProvider";
 var randomNumber = require("random-number-csprng");
-var ccxws = require('ccxws');
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -53,10 +52,8 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         this._name2client = {};
         this._ex2priceInfo = {};
 
-        for (let p of exchanges) {
-            let ex = p[0];
-            let market = p[1];
-            this._name2client[ex] = new (ccxws as any)[ex]();
+        for (let { ex, market, client } of exchanges) {
+            this._name2client[ex] = client;
             this.subscribe(ex, market);
         }
     }
@@ -83,11 +80,13 @@ export class WsLimitedPriceProvider implements IPriceProvider {
 
         client.on("error", (err: any) => self._logger.error(`Error for pair ${pair} on exchange ${ex}: ${err}`));
         client.on("ticker", (a: any, b: any) => {
-            self._ex2priceInfo[ex] = {
-                price: a.last,
-                priceTime: new Date().getTime()
+            if(b.base == marketObj.base && b.quote == marketObj.quote) {            
+                self._ex2priceInfo[ex] = {
+                    price: a.last,
+                    priceTime: new Date().getTime()
+                }
+                // self._logger.info(`Exchange: ${ ex }, pair: ${ pair }, price: ${ a.last }`);
             }
-            // self._logger.info(`Exchange: ${ ex }, pair: ${ pair }, price: ${ a.last }`);
         });
 
         try {
@@ -127,9 +126,9 @@ export class WsLimitedPriceProvider implements IPriceProvider {
 
     async getRestPrice(): Promise<number> {
         let prices = [];
-        for (let p of this._exchanges) {
-            let ccxtex = new (ccxt as any)[p[0]]({ timeout: 20 * 1000 });
-            let ticker = await ccxtex.fetchTicker(p[1]);
+        for (let { ex, market } of this._exchanges) {
+            let ccxtex = new (ccxt as any)[ex]({ timeout: 20 * 1000 });
+            let ticker = await ccxtex.fetchTicker(market);
             if (ticker) {
                 prices.push(Number(ticker.last));
                 if (this.isFirst()) {
@@ -143,7 +142,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
 
     async getPrice(): Promise<number> {
         let prices = [];
-        for (let ex of this._exchanges.map((x: any) => x[0])) {
+        for (let { ex } of this._exchanges) {
             let priceInfo = this._ex2priceInfo[ex];
             // price should not be older than 30s!!! TODO: parameter maybe!
             if (priceInfo && priceInfo.price && priceInfo.priceTime + 30 * 1000 >= new Date().getTime()) {
@@ -166,6 +165,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         if (prices.length == 0) {
             throw Error(`No price was retrieved for ${this._pair}!`);
         } else {
+            console.log(`${this._pair}: ${prices.length}`);
             return (prices.reduce((a: any, b: any) => a + b, 0.0) / prices.length) * this._factor;
         }
     }

@@ -29,7 +29,7 @@ export class DataProviderConfiguration {
 
 export class PriceProviderConfiguration {
 
-    public symbol!: string; // fAsset name, eg. FXRP, FXDG, FLTC, etc.
+    public symbol!: string; // Asset name, eg. XRP, DGB, LTC, etc.
     public decimals:number = 5;  
     public priceProviderClass!: string; // must implement IPriceProvider (e.g. RandomPriceProvider)
     public priceProviderParams!: any[]; // parameters to send to constructor of price provider class (e.g. ["XRP/USD"])

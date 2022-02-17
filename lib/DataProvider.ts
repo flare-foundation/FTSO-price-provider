@@ -16,6 +16,7 @@ import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb
 
 let randomNumber = require("random-number-csprng");
 let yargs = require("yargs");
+let ccxws = require('ccxws');
 
 interface ContractWithSymbol {
     symbol: string;
@@ -73,9 +74,22 @@ class DataProvider {
     data!: DataProviderData[]
 
     constructor(conf: any) {
+        let ex2client:any = {};
 
         this.data = conf.priceProviderList.map((ppc: any, index: number) => {
             ppc.priceProviderParams.push(this.logger);
+            ppc.priceProviderParams[2] = ppc.priceProviderParams[2].map( (arr:any) => {
+                let ex:string = arr[0];
+                if(!ex2client[ex]) {
+                    ex2client[ex] = new (ccxws as any)[ex]();
+                    ex2client[ex].setMaxListeners(conf.priceProviderList.length*2);
+                }
+                return {
+                    ex,
+                    market: arr[1],
+                    client: ex2client[ex]
+                };
+            });
             let dpd = {
                 index: index,
                 symbol: ppc.symbol,
@@ -202,7 +216,7 @@ class DataProvider {
 
         if (prices.length > 0) {
             this.logger.info(`Ftso indices: ${ftsoIndices.map(x => x.toString()).toString()}`)
-            let hash = priceHash(ftsoIndices, prices, random, this.account.address);
+            let hash = priceHash(this.web3, ftsoIndices, prices, random, this.account.address);
             var fnToEncode = this.priceSubmitterWeb3Contract.methods.submitHash(epochId, hash);
             await this.signAndFinalize3("Submit prices", this.priceSubmitterWeb3Contract.options.address, fnToEncode, "2500000");
         }
@@ -267,7 +281,6 @@ class DataProvider {
     }
 
     async setupSubmissionAndReveal() {
-        //console.log("this.epochSettings@setupSubmissionAndReveal=", this.epochSettings)
         let epochId: BigNumber = this.epochSettings.getCurrentEpochId();
         let epochSubmitTimeEnd: number = this.epochSettings.getEpochSubmitTimeEnd().toNumber();
         let epochRevealTimeEnd: number = this.epochSettings.getEpochReveaTimeEnd().toNumber();
@@ -281,7 +294,6 @@ class DataProvider {
         this.logger.info(`EPOCH DATA: epoch ${epochId} submit will end in: ${diffSubmit}ms, reveal in: ${diffSubmit + revealPeriod}ms, submitPeriod: ${submitPeriod}ms, revealPeriod: ${revealPeriod}ms`);
         setTimeout(() => {
             this.logger.info(`SUBMIT ENDED FOR: ${epochId}`);
-            this.logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         }, epochSubmitTimeEnd - new Date().getTime());
 
         setTimeout(() => {
@@ -470,7 +482,7 @@ class DataProvider {
         try {
             let data = await this.ftsoManagerWeb3Contract.methods.getPriceEpochConfiguration().call() as any;
             this.epochSettings = new EpochSettings(bigNumberToMillis(data[0]), bigNumberToMillis(data[1]), bigNumberToMillis(data[2]));
-            //console.log("this.epochSettings=", this.epochSettings)
+            // console.log("this.epochSettings=", this.epochSettings)
             this.setupSubmissionAndReveal();
         } catch (err: any) {
             this.logger.error(`getPriceEpochConfiguration() | ${err}`);
