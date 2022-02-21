@@ -442,7 +442,7 @@ class DataProvider {
             // if file .whitelisted does not exists then enable whitelisting
             if( !fs.existsSync(".whitelisted") )
             {
-                // conf.whitelist = true;                
+                conf.whitelist = true;                
                 this.logger.info(`whitelisting enabled`);
             }
 
