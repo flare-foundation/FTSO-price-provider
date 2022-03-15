@@ -9,6 +9,12 @@
     "gasPrice": "225000000000",
     "priceProviderList": [
         {
+            "symbol": "SGB",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["SGB/USD", 1.0, [["bitstamp", "SGB/USD"], ["gateio", "SGB/USDT"], ["bitrue", "SGB/USDT"]], "avg"]
+        },
+        {
             "symbol": "XRP",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
