@@ -16,7 +16,6 @@ import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb
 
 let randomNumber = require("random-number-csprng");
 let yargs = require("yargs");
-let ccxws = require('ccxws');
 
 interface ContractWithSymbol {
     symbol: string;
@@ -74,22 +73,9 @@ class DataProvider {
     data!: DataProviderData[]
 
     constructor(conf: any) {
-        let ex2client:any = {};
 
         this.data = conf.priceProviderList.map((ppc: any, index: number) => {
             ppc.priceProviderParams.push(this.logger);
-            ppc.priceProviderParams[2] = ppc.priceProviderParams[2].map( (arr:any) => {
-                let ex:string = arr[0];
-                if(!ex2client[ex]) {
-                    ex2client[ex] = new (ccxws as any)[ex]();
-                    ex2client[ex].setMaxListeners(conf.priceProviderList.length*2);
-                }
-                return {
-                    ex,
-                    market: arr[1],
-                    client: ex2client[ex]
-                };
-            });
             let dpd = {
                 index: index,
                 symbol: ppc.symbol,
@@ -102,6 +88,7 @@ class DataProvider {
         })
 
         this.provider = getProvider(conf.rpcUrl);
+
 
         if (this.data.length == 0) {
             throw Error("No price providers in configuration!");
