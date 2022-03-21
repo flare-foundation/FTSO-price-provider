@@ -2,12 +2,18 @@
     "accountPrivateKey": "",
     "rpcUrl": "https://songbird-api.flare.network/ext/bc/C/rpc",
     "priceSubmitterContractAddress": "0x1000000000000000000000000000000000000003",
-    "submitOffset": 160000,
+    "submitOffset": 90000,
     "revealOffset": 3000,
     "whitelist": false,
     "trusted": true,
     "gasPrice": "225000000000",
     "priceProviderList": [
+        {
+            "symbol": "SGB",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["SGB/USD", 1.0, [["bitstamp", "SGB/USD"],["gateio", "SGB/USDT"]], "avg"]
+        },
         {
             "symbol": "XRP",
             "decimals": 5,
@@ -54,7 +60,7 @@
             "symbol": "DGB",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["DGB/USD", 1.0, [["binance","DGB/USDT"],["bittrex","DGB/USD"]], "avg"]
+            "priceProviderParams": ["DGB/USD", 1.0, [["binance", "DGB/USDT"], ["hitbtc", "DGB/USDT"], ["kucoin", "DGB/USDT"]], "avg"]
         },
         {
             "symbol": "BTC",

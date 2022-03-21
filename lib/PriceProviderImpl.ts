@@ -4,7 +4,6 @@ import { logger } from 'ethers';
 import * as fs from 'fs';
 import { IPriceProvider } from "./IPriceProvider";
 var randomNumber = require("random-number-csprng");
-var ccxws = require('ccxws');
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +41,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
     private _name2client!: any;
     private _ex2priceInfo!: any;
 
-    // exchanges = [ ["bitstamp", "xrp/usd"], ["...", "..."], ... ]
+    // exchanges = [ { ex, market, client } ]
     // type is either 'first' or 'avg'
     constructor(pair: string, factor: number, exchanges: any, type: string, logger: any = null) {
         this._logger = logger;
@@ -53,11 +52,9 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         this._name2client = {};
         this._ex2priceInfo = {};
 
-        for (let p of exchanges) {
-            let ex = p[0];
-            let market = p[1];
-            this._name2client[ex] = new (ccxws as any)[ex]();
-            this.loadMarketsAndSubscribe(ex, market);
+        for (let { ex, market, client } of exchanges) {
+            this._name2client[ex] = client;
+            this.subscribe(ex, market);
         }
     }
 
@@ -83,11 +80,13 @@ export class WsLimitedPriceProvider implements IPriceProvider {
 
         client.on("error", (err: any) => self._logger.error(`Error for pair ${pair} on exchange ${ex}: ${err}`));
         client.on("ticker", (a: any, b: any) => {
-            self._ex2priceInfo[ex] = {
-                price: a.last,
-                priceTime: new Date().getTime()
+            if(b.base == marketObj.base && b.quote == marketObj.quote) {            
+                self._ex2priceInfo[ex] = {
+                    price: a.last,
+                    priceTime: new Date().getTime()
+                }
+                // self._logger.info(`Exchange: ${ ex }, pair: ${ pair }, price: ${ a.last }`);
             }
-            // self._logger.info(`Exchange: ${ ex }, pair: ${ pair }, price: ${ a.last }`);
         });
 
         try {
@@ -98,29 +97,38 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         client.subscribeTicker(marketObj);
     }
 
-    loadMarketsAndSubscribe(ex: string, pair: string): void {
-        let self = this;
-        const ccxtex = new (ccxt as any)[ex]({ timeout: 20 * 1000 });
+    marketId(clientStr:string, base:string, quote:string):string {
+        if(clientStr == 'kucoin' || clientStr == 'okex' || clientStr == 'coinbasepro') {
+            return `${base.toUpperCase()}-${quote.toUpperCase()}`;
+        } else if(clientStr == 'bitstamp' || clientStr == 'huobipro') {
+            return (base + quote).toLowerCase();
+        } else if(clientStr == 'gateio') {
+            return `${base.toUpperCase()}_${quote.toUpperCase()}`;
+        } else if(clientStr == 'ftx') {
+            return `${base.toUpperCase()}/${quote.toUpperCase()}`;
+        } else if( clientStr == 'kraken' && base == 'BTC') {
+            return `XBT${quote.toUpperCase()}`;
+        } else if(clientStr == 'kraken' && base == 'DOGE') {
+            return `XDG${quote.toUpperCase()}`;
+        } else {
+            return (base + quote).toUpperCase();
+        }
+    }
 
-        ccxtex.loadMarkets().then((data: any) => {
-            let market = data[pair];
+    subscribe(ex: string, pair: string): void {
+        let tmp:any = pair.split("/")
+        let base:string = tmp[0];
+        let quote:string = tmp[1];
 
-
-            if (market) {
-                let marketObj = { id: market.id, base: market.base, quote: market.quote, type: 'spot' };
-                self.subscribeTo(ex, pair, marketObj);
-            } else {
-                self._logger.error(`Bad market: ${pair}. Not supported by ${ex}.`)
-                throw Error(`Bad market: ${pair}. Not supported by ${ex}.`);
-            }
-        });
+        let marketObj = { id: this.marketId(ex, base, quote), base, quote, type: 'spot' };
+        this.subscribeTo(ex, pair, marketObj);
     }
 
     async getRestPrice(): Promise<number> {
         let prices = [];
-        for (let p of this._exchanges) {
-            let ccxtex = new (ccxt as any)[p[0]]({ timeout: 20 * 1000 });
-            let ticker = await ccxtex.fetchTicker(p[1]);
+        for (let { ex, market } of this._exchanges) {
+            let ccxtex = new (ccxt as any)[ex]({ timeout: 20 * 1000 });
+            let ticker = await ccxtex.fetchTicker(market);
             if (ticker) {
                 prices.push(Number(ticker.last));
                 if (this.isFirst()) {
@@ -134,10 +142,10 @@ export class WsLimitedPriceProvider implements IPriceProvider {
 
     async getPrice(): Promise<number> {
         let prices = [];
-        for (let ex of this._exchanges.map((x: any) => x[0])) {
+        for (let { ex } of this._exchanges) {
             let priceInfo = this._ex2priceInfo[ex];
-            // price should not be older than 10s!!! TODO: parameter maybe!
-            if (priceInfo && priceInfo.price && priceInfo.priceTime + 10 * 1000 >= new Date().getTime()) {
+            // price should not be older than 30s!!! TODO: parameter maybe!
+            if (priceInfo && priceInfo.price && priceInfo.priceTime + 30 * 1000 >= new Date().getTime()) {
                 prices.push(Number(priceInfo.price));
                 if (this.isFirst()) {
                     break;
@@ -157,6 +165,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         if (prices.length == 0) {
             throw Error(`No price was retrieved for ${this._pair}!`);
         } else {
+            console.log(`${this._pair}: ${prices.length}`);
             return (prices.reduce((a: any, b: any) => a + b, 0.0) / prices.length) * this._factor;
         }
     }
