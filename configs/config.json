@@ -12,43 +12,43 @@
             "symbol": "XRP",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["XRP/USD", 1.0, [["binanceus","XRP/USD"],["bittrex","XRP/USD"],["kraken","XRP/USD"],["bitstamp","XRP/USD"],["gateio","XRP/USD"]], "first"]
+            "priceProviderParams": ["XRP/USD", 1.0, [["binanceus","XRP/USD"]], "first"]
         },
         {
             "symbol": "LTC",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["LTC/USD", 1.0, [["binanceus","LTC/USD"],["coinbasepro","LTC/USD"],["bitstamp","LTC/USD"],["kraken","LTC/USD"],["bittrex","LTC/USD"]], "first"]
+            "priceProviderParams": ["LTC/USD", 1.0, [["binanceus","LTC/USD"]], "first"]
         },
         {
             "symbol": "XLM",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["XLM/USD", 1.0, [["binanceus","XLM/USD"],["coinbasepro","XLM/USD"],["kraken","XLM/USD"],["bittrex","XLM/USD"],["bitstamp","XLM/USD"]], "first"]
+            "priceProviderParams": ["XLM/USD", 1.0, [["binanceus","XLM/USD"]], "first"]
         },
         {
             "symbol": "DOGE",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["DOGE/USD", 1.0, [["binanceus","DOGE/USD"],["coinbasepro","DOGE/USD"],["bittrex","DOGE/USD"],["kraken","DOGE/USD"],["gateio","DOGE/USD"]], "first"]
+            "priceProviderParams": ["DOGE/USD", 1.0, [["binanceus","DOGE/USD"]], "first"]
         },
         {
             "symbol": "ADA",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ADA/USD", 1.0, [["binanceus","ADA/USD"],["coinbasepro","ADA/USD"],["bittrex","ADA/USD"],["kraken","ADA/USD"]], "first"]
+            "priceProviderParams": ["ADA/USD", 1.0, [["binanceus","ADA/USD"]], "first"]
         },
         {
             "symbol": "ALGO",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ALGO/USD", 1.0, [["binanceus","ALGO/USD"],["coinbasepro","ALGO/USD"],["bittrex","ALGO/USD"],["bitstamp","ALGO/USD"],["kraken","ALGO/USD"]], "first"]
+            "priceProviderParams": ["ALGO/USD", 1.0, [["binanceus","ALGO/USD"]], "first"]
         },
         {
             "symbol": "BCH",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["BCH/USD", 1.0, [["binanceus","BCH/USD"],["coinbasepro","BCH/USD"],["bittrex","BCH/USD"],["bitstamp","BCH/USD"],["kraken","BCH/USD"]], "first"]
+            "priceProviderParams": ["BCH/USD", 1.0, [["binanceus","BCH/USD"]], "first"]
         },
         {
             "symbol": "DGB",
@@ -60,19 +60,19 @@
             "symbol": "BTC",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["BTC/USD", 1.0, [["binanceus","BTC/USD"],["coinbasepro","BTC/USD"],["bittrex","BTC/USD"],["bitstamp","BTC/USD"],["kraken","BTC/USD"]], "first"]
+            "priceProviderParams": ["BTC/USD", 1.0, [["binanceus","BTC/USD"]], "first"]
         },
         {
             "symbol": "ETH",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ETH/USD", 1.0, [["binanceus","ETH/USD"],["coinbasepro","ETH/USD"],["bittrex","ETH/USD"],["bitstamp","ETH/USD"],["kraken","ETH/USD"]], "first"]
+            "priceProviderParams": ["ETH/USD", 1.0, [["binanceus","ETH/USD"]], "first"]
         },
         {
             "symbol": "FIL",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["FIL/USD", 1.0, [["binanceus","FIL/USD"],["coinbasepro","FIL/USD"],["bittrex","FIL/USD"],["kraken","FIL/USD"],["gemini","FIL/USD"]], "first"]
+            "priceProviderParams": ["FIL/USD", 1.0, [["binanceus","FIL/USD"]], "first"]
         }
     ]
 }
