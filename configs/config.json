@@ -18,43 +18,43 @@
             "symbol": "XRP",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["XRP/USD", 1.0, [["binanceus","XRP/USD"]], "first"]
+            "priceProviderParams": ["XRP/USD", 1.0, [["binanceus","XRP/USD"],["kraken","XRP/USD"]], "avg"]
         },
         {
             "symbol": "LTC",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["LTC/USD", 1.0, [["binanceus","LTC/USD"]], "first"]
+            "priceProviderParams": ["LTC/USD", 1.0, [["binanceus","LTC/USD"],["kraken","LTC/USD"]], "avg"]
         },
         {
             "symbol": "XLM",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["XLM/USD", 1.0, [["binanceus","XLM/USD"]], "first"]
+            "priceProviderParams": ["XLM/USD", 1.0, [["binanceus","XLM/USD"],["kraken","XLM/USD"]], "avg"]
         },
         {
             "symbol": "DOGE",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["DOGE/USD", 1.0, [["binanceus","DOGE/USD"]], "first"]
+            "priceProviderParams": ["DOGE/USD", 1.0, [["binanceus","DOGE/USD"],["kraken","DOGE/USD"]], "avg"]
         },
         {
             "symbol": "ADA",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ADA/USD", 1.0, [["binanceus","ADA/USD"]], "first"]
+            "priceProviderParams": ["ADA/USD", 1.0, [["binanceus","ADA/USD"],["kraken","ADA/USD"]], "avg"]
         },
         {
             "symbol": "ALGO",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ALGO/USD", 1.0, [["binanceus","ALGO/USD"]], "first"]
+            "priceProviderParams": ["ALGO/USD", 1.0, [["binanceus","ALGO/USD"],["kraken","ALGO/USD"]], "avg"]
         },
         {
             "symbol": "BCH",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["BCH/USD", 1.0, [["binanceus","BCH/USD"]], "first"]
+            "priceProviderParams": ["BCH/USD", 1.0, [["binanceus","BCH/USD"],["kraken","BCH/USD"]], "avg"]
         },
         {
             "symbol": "DGB",
@@ -66,19 +66,19 @@
             "symbol": "BTC",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["BTC/USD", 1.0, [["binanceus","BTC/USD"]], "first"]
+            "priceProviderParams": ["BTC/USD", 1.0, [["binanceus","BTC/USD"],["kraken","BTC/USD"]], "avg"]
         },
         {
             "symbol": "ETH",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ETH/USD", 1.0, [["binanceus","ETH/USD"]], "first"]
+            "priceProviderParams": ["ETH/USD", 1.0, [["binanceus","ETH/USD"],["kraken","ETH/USD"]], "avg"]
         },
         {
             "symbol": "FIL",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["FIL/USD", 1.0, [["binanceus","FIL/USD"]], "first"]
+            "priceProviderParams": ["FIL/USD", 1.0, [["binanceus","FIL/USD"],["kraken","FIL/USD"]], "avg"]
         }
     ]
 }
