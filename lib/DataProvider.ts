@@ -197,7 +197,7 @@ class DataProvider {
                 this.logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
                 this.symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
             } else {
-                this.logger.info(`No price for ${p.symbol}`);
+                this.logger.error(`No price for ${p.symbol}`);
             }
         }
 
