@@ -15,9 +15,9 @@ import { PriceInfo } from './PriceInfo';
 import * as impl from './PriceProviderImpl';
 import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
 
+let ccxws:any = require('ccxws');
 let randomNumber = require("random-number-csprng");
 let yargs = require("yargs");
-let ccxws = require('ccxws');
 
 interface ContractWithSymbol {
     symbol: string;
@@ -88,7 +88,6 @@ class DataProvider {
 
         // providers from config
         this.data = conf.priceProviderList.map((ppc: any, index: number) => {
-            
             ppc.priceProviderParams[2] = ppc.priceProviderParams[2].map( (arr:any) => {
                 let ex:string = arr[0];
                 return {
@@ -113,6 +112,7 @@ class DataProvider {
         })
 
         this.provider = getProvider(conf.rpcUrl);
+
 
         if (this.data.length == 0) {
             throw Error("No price providers in configuration!");
@@ -238,7 +238,7 @@ class DataProvider {
                 this.logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
                 this.symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
             } else {
-                this.logger.info(`No price for ${p.symbol}`);
+                this.logger.error(`No price for ${p.symbol}`);
             }
         }
 

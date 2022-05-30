@@ -4,6 +4,7 @@ import { logger } from 'ethers';
 import * as fs from 'fs';
 import { IPriceProvider } from "./IPriceProvider";
 var randomNumber = require("random-number-csprng");
+var ccxws = require('ccxws');
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,7 @@ export class WsLimitedPriceProvider implements IPriceProvider {
     private _ex2priceInfo!: any;
     private _forceUsdtUsdConversion!: boolean;
 
-    // exchanges = [ { ex, market, client } ]
+    // exchanges = [ ["bitstamp", "xrp/usd"], ["...", "..."], ... ]
     // type is either 'first' or 'avg'
     constructor(pair: string, factor: number, exchanges: any, type: string, forceUsdtUsdConversion: boolean = true) {
         this._forceUsdtUsdConversion = forceUsdtUsdConversion;
@@ -177,13 +178,13 @@ export class WsLimitedPriceProvider implements IPriceProvider {
     }
 
     subscribe(ex: string, pair: string): void {
-        let tmp:any = pair.split("/")
+        let tmp:any = pair.split("/");
         let base:string = tmp[0];
         let quote:string = tmp[1];
-
         let marketObj = { id: this.marketId(ex, base, quote), base, quote, type: 'spot' };
         this.subscribeTo(ex, pair, marketObj);
     }
+
 
     async getRestPrice(): Promise<number> {
         let prices = [];
@@ -205,7 +206,6 @@ export class WsLimitedPriceProvider implements IPriceProvider {
 
     async getPrice(): Promise<number> {
         let prices = [];
-        
         if(this._exchanges.length > 0) {
             let conversionRate:number = await this.getUsdtConversionRate( this._exchanges[0].market );
             for (let { ex } of this._exchanges) {
@@ -232,7 +232,6 @@ export class WsLimitedPriceProvider implements IPriceProvider {
         if (prices.length == 0) {
             throw Error(`No price was retrieved for ${this._pair}!`);
         } else {
-            // console.log(`${this._pair}: ${prices.length}`);
             return (prices.reduce((a: any, b: any) => a + b, 0.0) / prices.length) * this._factor;
         }
     }
