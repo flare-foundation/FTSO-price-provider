@@ -94,7 +94,7 @@ export function waitFinalize3Factory(web3: any) {
     }
 }
 
-export function getLogger(label: string | undefined = undefined) {
+export function getLogger(label: string | undefined = undefined, filename: string | undefined = undefined) {
     return winston.createLogger({
         format: winston.format.combine(
             winston.format.timestamp(),
@@ -114,7 +114,7 @@ export function getLogger(label: string | undefined = undefined) {
             new winston.transports.Console(),
             new winston.transports.File({
                 level: 'info',
-                filename: './logs/flare-price-provider.log'
+                filename: filename || './logs/flare-price-provider.log'
             })
         ]
     });

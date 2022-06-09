@@ -64,7 +64,7 @@ class DataProvider {
     epochSettings!: EpochSettings;
     nonce: number | undefined;     // if undefined, we retrieve it from blockchain, otherwise we use it
     nonceResetCount!: number
-    forcedNonceResetOn = 10;
+    forcedNonceResetOn = 1;
     symbol2epochId2priceInfo: Map<string, Map<string, PriceInfo>> = new Map();
 
     epochId2endRevealTime: Map<string, number> = new Map();
