@@ -12,13 +12,13 @@
             "symbol": "ADA",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ADA/USD", 1.0, [["coinbasepro", "ADA/USD"], ["binanceus", "ADA/USD"], ["bitfinex", "ADA/USD"], ["bitmex", "ADA/USD"], ["kraken", "ADA/USD"], ["binance", "ADA/USDT"], ["kucoin", "ADA/USDT"], ["bitrue", "ADA/USDT"], ["huobi", "ADA/USDT"], ["okex", "ADA/USDT"], ["gateio", "ADA/USDT"], ["digifinex", "ADA/USDT"], ["zb", "ADA/USDT"], ["crypto", "ADA/USDT"], ["mexc", "ADA/USDT"], ["zt", "ADA/USDT"]], "avg"]
+            "priceProviderParams": ["ADA/USD", 1.0, [["coinbasepro", "ADA/USD"], ["binanceus", "ADA/USD"], ["bitfinex", "ADA/USD"], ["bitmex", "ADA/USD"], ["kraken", "ADA/USD"], ["binance", "ADA/USDT"], ["bitrue", "ADA/USDT"], ["huobi", "ADA/USDT"], ["okex", "ADA/USDT"], ["gateio", "ADA/USDT"], ["digifinex", "ADA/USDT"], ["zb", "ADA/USDT"], ["crypto", "ADA/USDT"], ["mexc", "ADA/USDT"], ["zt", "ADA/USDT"]], "avg"]
         },
         {
             "symbol": "ALGO",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ALGO/USD", 1.0, [["coinbasepro", "ALGO/USD"], ["bitfinex", "ALGO/USD"], ["binanceus", "ALGO/USD"], ["binance", "ALGO/USDT"], ["okex", "ALGO/USDT"], ["bitrue", "ALGO/USDT"], ["kucoin", "ALGO/USDT"], ["huobi", "ALGO/USDT"], ["crypto", "ALGO/USDT"], ["zt", "ALGO/USDT"], ["lbank", "ALGO/USDT"], ["bitforex", "ALGO/USDT"], ["bibox", "ALGO/USDT"]], "avg"]
+            "priceProviderParams": ["ALGO/USD", 1.0, [["coinbasepro", "ALGO/USD"], ["bitfinex", "ALGO/USD"], ["binanceus", "ALGO/USD"], ["binance", "ALGO/USDT"], ["okex", "ALGO/USDT"], ["bitrue", "ALGO/USDT"], ["huobi", "ALGO/USDT"], ["crypto", "ALGO/USDT"], ["zt", "ALGO/USDT"], ["lbank", "ALGO/USDT"], ["bitforex", "ALGO/USDT"], ["bibox", "ALGO/USDT"]], "avg"]
         },
         {
             "symbol": "BCH",
@@ -30,25 +30,25 @@
             "symbol": "BTC",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["BTC/USD", 1.0, [["coinbasepro", "BTC/USD"], ["ftx", "BTC/USD"], ["bitmex", "BTC/USD"], ["binanceus", "BTC/USD"], ["bitfinex", "BTC/USD"], ["bitstamp", "BTC/USD"], ["kraken", "BTC/USD"], ["binance", "BTC/USDT"], ["huobi", "BTC/USDT"], ["kucoin", "BTC/USDT"], ["bitrue", "BTC/USDT"], ["digifinex", "BTC/USDT"], ["crypto", "BTC/USDT"], ["okex", "BTC/USDT"], ["zb", "BTC/USDT"], ["gateio", "BTC/USDT"], ["bitforex", "BTC/USDT"], ["bibox", "BTC/USDT"], ["bybit", "BTC/USDT"], ["zt", "BTC/USDT"], ["mexc", "BTC/USDT"], ["bitmart", "BTC/USDT"]], "avg"]
+            "priceProviderParams": ["BTC/USD", 1.0, [["coinbasepro", "BTC/USD"], ["ftx", "BTC/USD"], ["bitmex", "BTC/USD"], ["binanceus", "BTC/USD"], ["bitfinex", "BTC/USD"], ["bitstamp", "BTC/USD"], ["kraken", "BTC/USD"], ["binance", "BTC/USDT"], ["huobi", "BTC/USDT"], ["bitrue", "BTC/USDT"], ["digifinex", "BTC/USDT"], ["crypto", "BTC/USDT"], ["okex", "BTC/USDT"], ["zb", "BTC/USDT"], ["gateio", "BTC/USDT"], ["bitforex", "BTC/USDT"], ["bibox", "BTC/USDT"], ["bybit", "BTC/USDT"], ["zt", "BTC/USDT"], ["mexc", "BTC/USDT"], ["bitmart", "BTC/USDT"]], "avg"]
         },
         {
             "symbol": "DGB",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["DGB/USD", 1.0, [["bitfinex", "DGB/USD"], ["bittrex", "DGB/USD"], ["binance", "DGB/USDT"], ["digifinex", "DGB/USDT"], ["lbank", "DGB/USDT"], ["hitbtc", "DGB/USDT"], ["fmfw", "DGB/USDT"], ["zt", "DGB/USDT"], ["kucoin", "DGB/USDT"], ["okex", "DGB/USDT"], ["coinex", "DGB/USDT"]], "avg"]
+            "priceProviderParams": ["DGB/USD", 1.0, [["bitfinex", "DGB/USD"], ["bittrex", "DGB/USD"], ["binance", "DGB/USDT"], ["digifinex", "DGB/USDT"], ["lbank", "DGB/USDT"], ["hitbtc", "DGB/USDT"], ["fmfw", "DGB/USDT"], ["zt", "DGB/USDT"], ["okex", "DGB/USDT"], ["coinex", "DGB/USDT"]], "avg"]
         },
         {
             "symbol": "DOGE",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["DOGE/USD", 1.0, [["coinbasepro", "DOGE/USD"], ["ftx", "DOGE/USD"], ["bitmex", "DOGE/USD"], ["bitfinex", "DOGE/USD"], ["binanceus", "DOGE/USD"], ["ftxus", "DOGE/USD"], ["kraken", "DOGE/USD"], ["huobi", "DOGE/USDT"], ["binance", "DOGE/USDT"], ["gateio", "DOGE/USDT"], ["mexc", "DOGE/USDT"], ["okex", "DOGE/USDT"], ["zb", "DOGE/USDT"], ["digifinex", "DOGE/USDT"], ["bitrue", "DOGE/USDT"], ["kucoin", "DOGE/USDT"], ["bibox", "DOGE/USDT"], ["crypto", "DOGE/USDT"], ["bitforex", "DOGE/USDT"], ["zt", "DOGE/USDT"]], "avg"]
+            "priceProviderParams": ["DOGE/USD", 1.0, [["coinbasepro", "DOGE/USD"], ["ftx", "DOGE/USD"], ["bitmex", "DOGE/USD"], ["bitfinex", "DOGE/USD"], ["binanceus", "DOGE/USD"], ["ftxus", "DOGE/USD"], ["kraken", "DOGE/USD"], ["huobi", "DOGE/USDT"], ["binance", "DOGE/USDT"], ["gateio", "DOGE/USDT"], ["mexc", "DOGE/USDT"], ["okex", "DOGE/USDT"], ["zb", "DOGE/USDT"], ["digifinex", "DOGE/USDT"], ["bitrue", "DOGE/USDT"], ["bibox", "DOGE/USDT"], ["crypto", "DOGE/USDT"], ["bitforex", "DOGE/USDT"], ["zt", "DOGE/USDT"]], "avg"]
         },
         {
             "symbol": "ETH",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["ETH/USD", 1.0, [["coinbasepro", "ETH/USD"], ["ftx", "ETH/USD"], ["bitfinex", "ETH/USD"], ["binanceus", "ETH/USD"], ["bitmex", "ETH/USD"], ["bitstamp", "ETH/USD"], ["kraken", "ETH/USD"], ["binance", "ETH/USDT"], ["huobi", "ETH/USDT"], ["kucoin", "ETH/USDT"], ["okex", "ETH/USDT"], ["bitrue", "ETH/USDT"], ["crypto", "ETH/USDT"], ["gateio", "ETH/USDT"], ["digifinex", "ETH/USDT"], ["mexc", "ETH/USDT"], ["bibox", "ETH/USDT"], ["bitforex", "ETH/USDT"], ["zb", "ETH/USDT"], ["bitfinex", "ETH/USDT"], ["coinex", "ETH/USDT"], ["bybit", "ETH/USDT"], ["zt", "ETH/USDT"], ["ftx", "ETH/USDT"]], "avg"]
+            "priceProviderParams": ["ETH/USD", 1.0, [["coinbasepro", "ETH/USD"], ["ftx", "ETH/USD"], ["bitfinex", "ETH/USD"], ["binanceus", "ETH/USD"], ["bitmex", "ETH/USD"], ["bitstamp", "ETH/USD"], ["kraken", "ETH/USD"], ["binance", "ETH/USDT"], ["huobi", "ETH/USDT"], ["okex", "ETH/USDT"], ["bitrue", "ETH/USDT"], ["crypto", "ETH/USDT"], ["gateio", "ETH/USDT"], ["digifinex", "ETH/USDT"], ["mexc", "ETH/USDT"], ["bibox", "ETH/USDT"], ["bitforex", "ETH/USDT"], ["zb", "ETH/USDT"], ["bitfinex", "ETH/USDT"], ["coinex", "ETH/USDT"], ["bybit", "ETH/USDT"], ["zt", "ETH/USDT"], ["ftx", "ETH/USDT"]], "avg"]
         },
         {
             "symbol": "FIL",
@@ -60,7 +60,7 @@
             "symbol": "LTC",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["LTC/USD", 1.0, [["coinbasepro", "LTC/USD"], ["ftx", "LTC/USD"], ["bitmex", "LTC/USD"], ["bitfinex", "LTC/USD"], ["crypto", "LTC/USDT"], ["binance", "LTC/USDT"], ["okex", "LTC/USDT"], ["mexc", "LTC/USDT"], ["bibox", "LTC/USDT"], ["huobi", "LTC/USDT"], ["zb", "LTC/USDT"], ["bitrue", "LTC/USDT"], ["kucoin", "LTC/USDT"], ["zt", "LTC/USDT"]], "avg"]
+            "priceProviderParams": ["LTC/USD", 1.0, [["coinbasepro", "LTC/USD"], ["ftx", "LTC/USD"], ["bitmex", "LTC/USD"], ["bitfinex", "LTC/USD"], ["crypto", "LTC/USDT"], ["binance", "LTC/USDT"], ["okex", "LTC/USDT"], ["mexc", "LTC/USDT"], ["bibox", "LTC/USDT"], ["huobi", "LTC/USDT"], ["zb", "LTC/USDT"], ["bitrue", "LTC/USDT"], ["zt", "LTC/USDT"]], "avg"]
         },
         {
             "symbol": "SGB",
@@ -72,13 +72,13 @@
             "symbol": "XLM",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["XLM/USD", 1.0, [["coinbasepro", "XLM/USD"], ["bitfinex", "XLM/USD"], ["binanceus", "XLM/USD"], ["bitstamp", "XLM/USD"], ["kraken", "XLM/USD"], ["binance", "XLM/USDT"], ["bitforex", "XLM/USDT"], ["mexc", "XLM/USDT"], ["kucoin", "XLM/USDT"], ["digifinex", "XLM/USDT"], ["bitrue", "XLM/USDT"], ["crypto", "XLM/USDT"], ["huobi", "XLM/USDT"], ["bibox", "XLM/USDT"], ["okex", "XLM/USDT"]], "avg"]
+            "priceProviderParams": ["XLM/USD", 1.0, [["coinbasepro", "XLM/USD"], ["bitfinex", "XLM/USD"], ["binanceus", "XLM/USD"], ["bitstamp", "XLM/USD"], ["kraken", "XLM/USD"], ["binance", "XLM/USDT"], ["bitforex", "XLM/USDT"], ["mexc", "XLM/USDT"], ["digifinex", "XLM/USDT"], ["bitrue", "XLM/USDT"], ["crypto", "XLM/USDT"], ["huobi", "XLM/USDT"], ["bibox", "XLM/USDT"], ["okex", "XLM/USDT"]], "avg"]
         },
         {
             "symbol": "XRP",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["XRP/USD", 1.0, [["ftx", "XRP/USD"], ["bitfinex", "XRP/USD"], ["bitmex", "XRP/USD"], ["bitstamp", "XRP/USD"], ["kraken", "XRP/USD"], ["binance", "XRP/USDT"], ["okex", "XRP/USDT"], ["kucoin", "XRP/USDT"], ["bitrue", "XRP/USDT"], ["zb", "XRP/USDT"], ["huobi", "XRP/USDT"], ["mexc", "XRP/USDT"], ["digifinex", "XRP/USDT"], ["crypto", "XRP/USDT"], ["bitforex", "XRP/USDT"], ["bybit", "XRP/USDT"], ["bibox", "XRP/USDT"], ["gateio", "XRP/USDT"], ["lbank", "XRP/USDT"], ["zt", "XRP/USDT"]], "avg"]
+            "priceProviderParams": ["XRP/USD", 1.0, [["ftx", "XRP/USD"], ["bitfinex", "XRP/USD"], ["bitmex", "XRP/USD"], ["bitstamp", "XRP/USD"], ["kraken", "XRP/USD"], ["binance", "XRP/USDT"], ["okex", "XRP/USDT"], ["bitrue", "XRP/USDT"], ["zb", "XRP/USDT"], ["huobi", "XRP/USDT"], ["mexc", "XRP/USDT"], ["digifinex", "XRP/USDT"], ["crypto", "XRP/USDT"], ["bitforex", "XRP/USDT"], ["bybit", "XRP/USDT"], ["bibox", "XRP/USDT"], ["gateio", "XRP/USDT"], ["lbank", "XRP/USDT"], ["zt", "XRP/USDT"]], "avg"]
         }
     ]
 }
