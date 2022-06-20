@@ -20,6 +20,8 @@ class Wrap extends Base {
     public async run():Promise<void> {
         await this.init('Wrap');
 
+        Decimal.set({ toExpPos: 100 });
+
         let wrapAmount:Decimal;
         
         // balance (in WEI)

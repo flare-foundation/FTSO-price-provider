@@ -18,6 +18,8 @@ class Unwrap extends Base {
     public async run():Promise<void> {
         await this.init('Unwrap');
 
+        Decimal.set({ toExpPos: 100 });
+
         let unwrapAmount:Decimal;
         
         // balance (in WEI)
