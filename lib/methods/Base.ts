@@ -59,7 +59,7 @@ export class Base {
         this.logger.info(`   * FtsoManager address obtained: ${ftsoManagerAddress}`);
         this.ftsoManagerContract = await getWeb3Contract(this.web3, ftsoManagerAddress, "FtsoManager");
         
-        let ftsoRewardManagerAddress = await this.ftsoManagerContract.methods.rewardManager().call();
+        let ftsoRewardManagerAddress = await this.ftsoManagerContract.methods.getFtsoRewardManager().call();
         this.ftsoRewardManagerContract = await getWeb3Contract(this.web3, ftsoRewardManagerAddress, "FtsoRewardManager");
         this.logger.info(`   * FtsoRewardManager address obtained: ${ftsoRewardManagerAddress}`);
 

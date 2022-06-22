@@ -212,12 +212,11 @@ class DataProvider {
         let realEpochData = await this.ftsoManagerWeb3Contract.methods.getCurrentPriceEpochData().call()
         this.logger.info(`Internal epoch id: ${epochId}, real ${realEpochData._priceEpochId}`)
 
-        let prices = [];
-        let ftsoIndices = [];
+        let index2price:Map<number,Number> = new Map();
         let random = this.getRandom();
         this.currentBitmask = await this.priceSubmitterWeb3Contract.methods.voterWhitelistBitmap(this.account.address).call() as any;
         this.logger.info(`Current bitmask: ${this.currentBitmask.toString(2)}`);
-
+        
         for (let p of lst) {
             p = p as DataProviderData;
             if (!this.symbol2Index.has(p.symbol)) {
@@ -232,14 +231,16 @@ class DataProvider {
             let price = await p.priceProvider.getPrice();
             if (price) {
                 let preparedPrice = this.preparePrice(price, p.decimals);
-                prices.push(preparedPrice);
-                ftsoIndices.push(this.symbol2Index.get(p.symbol));
+                index2price.set( Number(this.symbol2Index.get(p.symbol)), preparedPrice);
                 this.logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
                 this.symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
             } else {
                 this.logger.error(`No price for ${p.symbol}`);
             }
         }
+        
+        let ftsoIndices:number[] = [ ...index2price.keys() ].sort( (a:number, b:number) => a-b );
+        let prices:string[] = ftsoIndices.map( (index:number) => index2price.get(index)!.toString() );
 
         if (prices.length > 0) {
             this.logger.info(`Ftso indices: ${ftsoIndices.map(x => x.toString()).toString()}`)
@@ -255,27 +256,28 @@ class DataProvider {
         while (this.epochId2endRevealTime.get(epochIdStr) && new Date().getTime() < this.epochId2endRevealTime.get(epochIdStr)!) {
 
             // let addresses = [];
-            let ftsoIndices = [];
-            let prices = [];
             let random = Web3.utils.toBN('0');
-
+            let index2price:Map<number,Number> = new Map();
+            
             for (let p of lst) {
                 p = p as DataProviderData;
                 if (!this.symbol2Index.get(p.symbol)) {
                     this.logger.info(`Skipping reveal of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${this.supportedSymbols()}.`);
                     continue;
                 }
-
+                
                 let priceInfo = this.symbol2epochId2priceInfo.get(p.symbol)!.get(epochIdStr);
-
+                
                 if (priceInfo) {
                     this.logger.info(`${p.label} | Revealing price for ${epochIdStr}`);
                     priceInfo.moveToNextStatus();
-                    ftsoIndices.push(this.symbol2Index.get(p.symbol));
-                    prices.push(priceInfo.priceSubmitted);
+                    index2price.set( Number(this.symbol2Index.get(p.symbol)), priceInfo.priceSubmitted);
                     random = priceInfo.random;
                 }
             }
+            
+            let ftsoIndices:number[] = [ ...index2price.keys() ].sort( (a:number, b:number) => a-b );
+            let prices:string[] = ftsoIndices.map( (index:number) => index2price.get(index)!.toString() );
 
             if (prices.length > 0) {
                 var fnToEncode = this.priceSubmitterWeb3Contract.methods.revealPrices(epochIdStr, ftsoIndices, prices, random);
