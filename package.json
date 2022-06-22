@@ -8,7 +8,7 @@
     "@google-cloud/secret-manager": "3.10.1",
     "@types/glob": "7.1.4",
     "ccxt": "1.50.74",
-    "ccxws": "0.43.1",
+    "ccxws": "git+https://github.com/flare-foundation/ccxws.git#0.43.29",
     "ethers": "5.1.4",
     "dotenv": "10.0.0",
     "glob": "7.1.7",

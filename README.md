@@ -138,3 +138,24 @@ which runs the script `scripts/docker-build.sh`
 
 Deployment address is defined by setting SERVER variable in the script.
 
+# Running various commands
+
+One-time calls for wrapping, unwrapping, claiming rewards and setting data provider fee percents.
+
+Must set `RPC_URL` and either `PROJECT_SECRET` or `PRIVATE_KEY` as env variables, and run `yarn tsc` to compile the typescript.
+
+## Wrap
+
+To wrap native currency (SGB, FLR, CFLR) to wrapped instance (WSGB, WFLR, WCFLR) run from root folder: `./scripts/run-command.sh Wrap <amount>` where `<amount>` is in native currency (e.g. 2 for 2 SGB). Also, `<amount>` may be ommited - in this case everything but 100 units are wrapped! 
+
+## Unwrap
+
+To unwrap wrapped currency (WSGB, WFLR, WCFLR) to native instance (SGB, FLR, CFLR) run from root folder: `./scripts/run-command.sh Unwrap <amount>` where `<amount>` is in wrapped currency (e.g. 2 for 2 WSGB). Also, `<amount>` may be ommited - in this case everything is unwrapped!
+
+## ClaimRewards
+
+To claim rewards for certain reward epochs run from root: `./scripts/run-command.sh ClaimRewards <epochs>` where `<epochs>` are rewards epochs separated by comma (e.g. 32,33,34) - this parameter is mandatory.
+
+## SetFee
+
+To set fee percents run from root: `./scripts/run-command.sh SetFee <fee>` where `<fee>` must be a number between 0 and 100 and represents fee percentage (e.g. 100 for 100% fee) - this parameter is mandatory.

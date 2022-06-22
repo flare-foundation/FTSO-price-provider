@@ -10,13 +10,14 @@ import { DataProviderData } from './DataProviderData';
 import { DotEnvExt } from './DotEnvExt';
 import { EpochSettings } from './EpochSettings';
 import { fetchSecret } from './GoogleSecret';
+import { IPriceProvider } from './IPriceProvider';
 import { PriceInfo } from './PriceInfo';
 import * as impl from './PriceProviderImpl';
 import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
 
+let ccxws:any = require('ccxws');
 let randomNumber = require("random-number-csprng");
 let yargs = require("yargs");
-let ccxws = require('ccxws');
 
 interface ContractWithSymbol {
     symbol: string;
@@ -63,38 +64,47 @@ class DataProvider {
     epochSettings!: EpochSettings;
     nonce: number | undefined;     // if undefined, we retrieve it from blockchain, otherwise we use it
     nonceResetCount!: number
-    forcedNonceResetOn = 10;
+    forcedNonceResetOn = 1;
     symbol2epochId2priceInfo: Map<string, Map<string, PriceInfo>> = new Map();
 
     epochId2endRevealTime: Map<string, number> = new Map();
     functionsToExecute: any[] = [];
 
     currentBitmask = 0;
+    ex2client: any = {};
 
     data!: DataProviderData[]
 
     constructor(conf: any) {
-        let ex2client:any = {};
+        // we need this provider for usdt/usd pair
+        let n:number = conf.priceProviderList.length;
+        let exchanges:any[] = [];
+        for(let ex of ['coinbasepro', 'ftx', 'kraken']) {
+            exchanges.push( { ex, market: 'USDT/USD', client: this.getWsClient(ex, 3*n) } );
+        }
+        let usdtUsdProvider:IPriceProvider = new impl.WsLimitedPriceProvider('USDT/USD', 1.0, exchanges, 'avg');
+        usdtUsdProvider.setLogger(this.logger);
+        usdtUsdProvider.init();
 
+        // providers from config
         this.data = conf.priceProviderList.map((ppc: any, index: number) => {
-            ppc.priceProviderParams.push(this.logger);
             ppc.priceProviderParams[2] = ppc.priceProviderParams[2].map( (arr:any) => {
                 let ex:string = arr[0];
-                if(!ex2client[ex]) {
-                    ex2client[ex] = new (ccxws as any)[ex]();
-                    ex2client[ex].setMaxListeners(conf.priceProviderList.length*2);
-                }
                 return {
                     ex,
                     market: arr[1],
-                    client: ex2client[ex]
+                    client: this.getWsClient(ex, 2*n)
                 };
             });
+            let priceProvider:IPriceProvider = new (impl as any)[ppc.priceProviderClass](...ppc.priceProviderParams);
+            priceProvider.setLogger(this.logger);
+            priceProvider.setUsdtUsdProvider(usdtUsdProvider);
+            priceProvider.init();
             let dpd = {
                 index: index,
                 symbol: ppc.symbol,
                 decimals: ppc.decimals,
-                priceProvider: new (impl as any)[ppc.priceProviderClass](...ppc.priceProviderParams),
+                priceProvider,
                 label: ppc.priceProviderClass + "(" + ppc.symbol + "/USD)"
             } as DataProviderData;
             this.symbol2dpd.set(ppc.symbol, dpd);
@@ -114,6 +124,23 @@ class DataProvider {
             this.symbol2epochId2priceInfo.set(d.symbol, new Map());
         });
 
+    }
+
+    getWsClient(ex:string, n:number): void {
+        if(!this.ex2client[ex]) {
+            let self:any = this;
+            let client:any = new (ccxws as any)[ex]();
+            client.setMaxListeners(n);
+            client.on("error", (err: any) => self.logger.error(`Error on exchange ${ex}: ${err}`));
+            client.on("reconnecting", () => self.logger.info(`Reconnecting to ${ex}...`));
+            client.on("connecting", () => self.logger.info(`Connecting to ${ex}...`));
+            client.on("connected", () => self.logger.info(`Connected to ${ex}...`));
+            client.on("disconnected", () => self.logger.info(`Disconnected from ${ex}...`));
+            client.on("closing", () => self.logger.info(`Closing on ${ex}...`));
+            client.on("closed", () => self.logger.info(`Closed on ${ex}...`));
+            this.ex2client[ex] = client;
+        }
+        return this.ex2client[ex];
     }
 
     async getNonce(): Promise<string> {
@@ -210,7 +237,7 @@ class DataProvider {
                 this.logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
                 this.symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
             } else {
-                this.logger.info(`No price for ${p.symbol}`);
+                this.logger.error(`No price for ${p.symbol}`);
             }
         }
 

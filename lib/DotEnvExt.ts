@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 
 function dotenvInclude()
 {
-    const include = process.env.DOTENV_INCLUDE
+    const include = process.env.DOTENV_INCLUDE;
 
-    if( include===null || include===undefined ) return
+    if( include===null || include===undefined ) return;
 
     for(const inc of include.split( ';' ) )
     {
@@ -26,5 +26,5 @@ export function DotEnvExt()
         dotenv.config();
     }
 
-    dotenvInclude()
+    dotenvInclude();
 }
