@@ -1,0 +1,154 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "BokkyPooBahsDateTimeLibrary",
+  "sourceName": "contracts/utils/implementation/DateTimeLibrary.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "DOW_FRI",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DOW_MON",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DOW_SAT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DOW_SUN",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DOW_THU",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DOW_TUE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DOW_WED",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "OFFSET19700101",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SECONDS_PER_DAY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SECONDS_PER_HOUR",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SECONDS_PER_MINUTE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x610194610026600b82828239805160001a60731461001957fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600436106100b35760003560e01c8063a3f144ae1161007b578063a3f144ae146100f2578063c7edf88c146100fa578063cfbb9f3714610102578063d2b507431461010a578063e955643014610112578063f9fd52501461011a576100b3565b8063126702a0146100b857806329441674146100d25780634df86126146100da57806374f0314f146100e25780638bbf51b7146100ea575b600080fd5b6100c0610122565b60408051918252519081900360200190f35b6100c0610127565b6100c061012c565b6100c0610132565b6100c0610139565b6100c061013e565b6100c0610145565b6100c061014a565b6100c061014f565b6100c0610154565b6100c0610159565b600281565b600781565b610e1081565b6201518081565b600381565b62253d8c81565b600681565b600481565b600581565b603c81565b60018156fea264697066735822122013620d32be5f4510e07fbf11f50ce6dc53bd51dcf82b722920b6988ea6b6805f64736f6c63430007060033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600436106100b35760003560e01c8063a3f144ae1161007b578063a3f144ae146100f2578063c7edf88c146100fa578063cfbb9f3714610102578063d2b507431461010a578063e955643014610112578063f9fd52501461011a576100b3565b8063126702a0146100b857806329441674146100d25780634df86126146100da57806374f0314f146100e25780638bbf51b7146100ea575b600080fd5b6100c0610122565b60408051918252519081900360200190f35b6100c0610127565b6100c061012c565b6100c0610132565b6100c0610139565b6100c061013e565b6100c0610145565b6100c061014a565b6100c061014f565b6100c0610154565b6100c0610159565b600281565b600781565b610e1081565b6201518081565b600381565b62253d8c81565b600681565b600481565b600581565b603c81565b60018156fea264697066735822122013620d32be5f4510e07fbf11f50ce6dc53bd51dcf82b722920b6988ea6b6805f64736f6c63430007060033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

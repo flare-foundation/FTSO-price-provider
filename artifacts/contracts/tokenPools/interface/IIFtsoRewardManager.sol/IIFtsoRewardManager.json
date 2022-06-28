@@ -1,0 +1,896 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IIFtsoRewardManager",
+  "sourceName": "contracts/tokenPools/interface/IIFtsoRewardManager.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "authorizedAmountWei",
+          "type": "uint256"
+        }
+      ],
+      "name": "DailyAuthorizedInflationSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "dataProvider",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "validFromEpoch",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeePercentageChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountReceivedWei",
+          "type": "uint256"
+        }
+      ],
+      "name": "InflationReceived",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "dataProvider",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "whoClaimed",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sentTo",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "rewardEpoch",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardClaimed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "rewardEpochId",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardClaimsExpired",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountBurnedWei",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardsBurned",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "ftso",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address[]",
+          "name": "addresses",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "rewards",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "RewardsDistributed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "reward",
+          "type": "uint256"
+        }
+      ],
+      "name": "UnearnedRewardsAccrued",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceEpochDurationSeconds",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceEpochEndTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "accrueUnearnedRewards",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "activate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "active",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_executor",
+          "type": "address"
+        }
+      ],
+      "name": "addClaimExecutor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardEpochs",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "claimAndWrapReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardEpochs",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_dataProviders",
+          "type": "address[]"
+        }
+      ],
+      "name": "claimAndWrapRewardFromDataProviders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_rewardOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardEpochs",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_dataProviders",
+          "type": "address[]"
+        }
+      ],
+      "name": "claimAndWrapRewardFromDataProvidersToOwner",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_rewardOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardEpochs",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "claimAndWrapRewardToOwner",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardEpochs",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "claimReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardEpochs",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_dataProviders",
+          "type": "address[]"
+        }
+      ],
+      "name": "claimRewardFromDataProviders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpochId",
+          "type": "uint256"
+        }
+      ],
+      "name": "closeExpiredRewardEpoch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "deactivate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "addresses",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "weights",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalWeight",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "ftso",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceEpochDurationSeconds",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentRewardEpoch",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceEpochEndTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "votePowerBlock",
+          "type": "uint256"
+        }
+      ],
+      "name": "distributeRewards",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_dataProvider",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_claimer",
+          "type": "address"
+        }
+      ],
+      "name": "getClaimedReward",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "_claimed",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getContractName",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentRewardEpoch",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_dataProvider",
+          "type": "address"
+        }
+      ],
+      "name": "getDataProviderCurrentFeePercentage",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_feePercentageBIPS",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_dataProvider",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        }
+      ],
+      "name": "getDataProviderFeePercentage",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_feePercentageBIPS",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_dataProvider",
+          "type": "address"
+        }
+      ],
+      "name": "getDataProviderScheduledFeePercentageChanges",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_feePercentageBIPS",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_validFromEpoch",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bool[]",
+          "name": "_fixed",
+          "type": "bool[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEpochReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_totalReward",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_claimedReward",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getEpochsWithClaimableRewards",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_startEpochId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_endEpochId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_beneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "getEpochsWithUnclaimedRewards",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_epochIds",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getInflationAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getInitialRewardEpoch",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getRewardEpochToExpireNext",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        }
+      ],
+      "name": "getRewardEpochVotePowerBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        }
+      ],
+      "name": "getStateOfRewards",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "_dataProviders",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardAmounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bool[]",
+          "name": "_claimed",
+          "type": "bool[]"
+        },
+        {
+          "internalType": "bool",
+          "name": "_claimable",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_dataProviders",
+          "type": "address[]"
+        }
+      ],
+      "name": "getStateOfRewardsFromDataProviders",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_rewardAmounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bool[]",
+          "name": "_claimed",
+          "type": "bool[]"
+        },
+        {
+          "internalType": "bool",
+          "name": "_claimable",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTokenPoolSupplyData",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_lockedFundsWei",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_totalInflationAuthorizedWei",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_totalClaimedWei",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_dataProvider",
+          "type": "address"
+        }
+      ],
+      "name": "getUnclaimedReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_weight",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "receiveInflation",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_executor",
+          "type": "address"
+        }
+      ],
+      "name": "removeClaimExecutor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_toAuthorizeWei",
+          "type": "uint256"
+        }
+      ],
+      "name": "setDailyAuthorizedInflation",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_feePercentageBIPS",
+          "type": "uint256"
+        }
+      ],
+      "name": "setDataProviderFeePercentage",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_validFromEpoch",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

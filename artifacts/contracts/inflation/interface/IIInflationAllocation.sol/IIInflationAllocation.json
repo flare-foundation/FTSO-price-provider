@@ -1,0 +1,49 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IIInflationAllocation",
+  "sourceName": "contracts/inflation/interface/IIInflationAllocation.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getAnnualPercentageBips",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSharingPercentages",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "contract IIInflationReceiver",
+              "name": "inflationReceiver",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "percentBips",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct SharingPercentage[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

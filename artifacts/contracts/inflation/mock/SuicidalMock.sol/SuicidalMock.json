@@ -1,0 +1,46 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "SuicidalMock",
+  "sourceName": "contracts/inflation/mock/SuicidalMock.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_target",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "die",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "target",
+      "outputs": [
+        {
+          "internalType": "address payable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b506040516101213803806101218339818101604052602081101561003357600080fd5b5051600080546001600160a01b039092166001600160a01b031990921691909117905560bd806100646000396000f3fe60806040526004361060295760003560e01c806335f46994146034578063d4b8399214603c57602f565b36602f57005b600080fd5b603a606a565b005b348015604757600080fd5b50604e6078565b604080516001600160a01b039092168252519081900360200190f35b6000546001600160a01b0316ff5b6000546001600160a01b03168156fea264697066735822122007160c7a381a34caabd613e2c49bb9b48d66319a0ac007412948c2f422f09db364736f6c63430007060033",
+  "deployedBytecode": "0x60806040526004361060295760003560e01c806335f46994146034578063d4b8399214603c57602f565b36602f57005b600080fd5b603a606a565b005b348015604757600080fd5b50604e6078565b604080516001600160a01b039092168252519081900360200190f35b6000546001600160a01b0316ff5b6000546001600160a01b03168156fea264697066735822122007160c7a381a34caabd613e2c49bb9b48d66319a0ac007412948c2f422f09db364736f6c63430007060033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

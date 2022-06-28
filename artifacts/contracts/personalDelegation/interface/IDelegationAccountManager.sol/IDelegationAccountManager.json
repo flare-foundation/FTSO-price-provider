@@ -1,0 +1,95 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IDelegationAccountManager",
+  "sourceName": "contracts/personalDelegation/interface/IDelegationAccountManager.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "delegationAccount",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "CreateDelegationAccount",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "libraryAddress",
+          "type": "address"
+        }
+      ],
+      "name": "SetLibraryAddress",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "createDelegationAccount",
+      "outputs": [
+        {
+          "internalType": "contract DelegationAccountClonable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getDistributions",
+      "outputs": [
+        {
+          "internalType": "contract IDistributionToDelegators[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFtsoRewardManagers",
+      "outputs": [
+        {
+          "internalType": "contract IIFtsoRewardManager[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_libraryAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setLibraryAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

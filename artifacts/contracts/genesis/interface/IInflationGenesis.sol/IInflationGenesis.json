@@ -1,0 +1,18 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IInflationGenesis",
+  "sourceName": "contracts/genesis/interface/IInflationGenesis.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "receiveMinting",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

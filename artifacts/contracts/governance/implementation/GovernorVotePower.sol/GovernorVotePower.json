@@ -1,0 +1,24 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "GovernorVotePower",
+  "sourceName": "contracts/governance/implementation/GovernorVotePower.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "votePower",
+      "outputs": [
+        {
+          "internalType": "contract IIGovernanceVotePower",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

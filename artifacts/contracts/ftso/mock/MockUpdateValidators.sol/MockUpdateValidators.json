@@ -1,0 +1,18 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockUpdateValidators",
+  "sourceName": "contracts/ftso/mock/MockUpdateValidators.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "updateActiveValidators",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080604052348015600f57600080fd5b50606d80601d6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c806321eb1a9514602d575b600080fd5b60336035565b005b56fea264697066735822122012ad347e2539fed5fee4b4951b4450d1bb7824972b993aed7959faf3ea37438b64736f6c63430007060033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c806321eb1a9514602d575b600080fd5b60336035565b005b56fea264697066735822122012ad347e2539fed5fee4b4951b4450d1bb7824972b993aed7959faf3ea37438b64736f6c63430007060033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

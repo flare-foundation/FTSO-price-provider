@@ -1,0 +1,234 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ICollateralizable",
+  "sourceName": "contracts/mockXAsset/interface/ICollateralizable.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "epochID",
+          "type": "uint256"
+        }
+      ],
+      "name": "addRewardToAgentPosition",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "succeess",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "assetAddress",
+          "type": "bytes32"
+        }
+      ],
+      "name": "assetRedemptionRequest",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "redemptionId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address[]",
+          "name": "agents",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "assetAmounts",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "freshMint",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "agentPosition",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "freshMintMinRatio",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "natAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "enum ICollateralizable.FeeHandling",
+          "name": "handling",
+          "type": "uint8"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "mintAmountTwei",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "mintDestination",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "underlyingAddress",
+          "type": "bytes32"
+        }
+      ],
+      "name": "mintRequest",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "mintRequestId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address[]",
+          "name": "agents",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "assetAmounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "assetAddress",
+          "type": "bytes32[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "mintRequestId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "minterSourceAddress",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "agentAssetAddress",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "destinationTag",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "assetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "merkleProof",
+          "type": "bytes32[]"
+        }
+      ],
+      "name": "proveMintPayment",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "mintedAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "redemptionRequestId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "agentSourceAssetAddress",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "redeemerAssetAddress",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "destinationTag",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "assetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "merkleProof",
+          "type": "bytes32[]"
+        }
+      ],
+      "name": "proveRedemptionPayment",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "redeemedAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

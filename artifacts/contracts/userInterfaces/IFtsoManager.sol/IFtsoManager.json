@@ -1,0 +1,357 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IFtsoManager",
+  "sourceName": "contracts/userInterfaces/IFtsoManager.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        }
+      ],
+      "name": "AccruingUnearnedRewardsFailed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "ftso",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        }
+      ],
+      "name": "DistributingRewardsFailed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "fallbackMode",
+          "type": "bool"
+        }
+      ],
+      "name": "FallbackMode",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "contract IIFtso",
+          "name": "ftso",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum IFtso.PriceFinalizationType",
+          "name": "failingType",
+          "type": "uint8"
+        }
+      ],
+      "name": "FinalizingPriceEpochFailed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "contract IIFtso",
+          "name": "ftso",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "add",
+          "type": "bool"
+        }
+      ],
+      "name": "FtsoAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "contract IIFtso",
+          "name": "ftso",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "fallbackMode",
+          "type": "bool"
+        }
+      ],
+      "name": "FtsoFallbackMode",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "contract IIFtso",
+          "name": "ftso",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "epochId",
+          "type": "uint256"
+        }
+      ],
+      "name": "InitializingCurrentEpochStateForRevealFailed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "chosenFtso",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "rewardEpochId",
+          "type": "uint256"
+        }
+      ],
+      "name": "PriceEpochFinalized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "votepowerBlock",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "startBlock",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardEpochFinalized",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "active",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentPriceEpochData",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_priceEpochId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_priceEpochStartTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_priceEpochEndTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_priceEpochRevealEndTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_currentTimestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentPriceEpochId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_priceEpochId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentRewardEpoch",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFallbackMode",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "_fallbackMode",
+          "type": "bool"
+        },
+        {
+          "internalType": "contract IIFtso[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        },
+        {
+          "internalType": "bool[]",
+          "name": "_ftsoInFallbackMode",
+          "type": "bool[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFtsos",
+      "outputs": [
+        {
+          "internalType": "contract IIFtso[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPriceEpochConfiguration",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_firstPriceEpochStartTs",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_priceEpochDurationSeconds",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_revealEpochDurationSeconds",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getRewardEpochConfiguration",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_firstRewardEpochStartTs",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpochDurationSeconds",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getRewardEpochToExpireNext",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_rewardEpoch",
+          "type": "uint256"
+        }
+      ],
+      "name": "getRewardEpochVotePowerBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

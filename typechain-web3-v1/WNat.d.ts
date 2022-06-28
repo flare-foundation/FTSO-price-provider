@@ -172,8 +172,6 @@ export interface WNat extends BaseContract {
 
     name(): NonPayableTransactionObject<string>;
 
-    needsReplacementVPContract(): NonPayableTransactionObject<boolean>;
-
     proposeGovernance(_governance: string): NonPayableTransactionObject<void>;
 
     proposedGovernance(): NonPayableTransactionObject<string>;
@@ -279,6 +277,13 @@ export interface WNat extends BaseContract {
       _owner: string,
       _blockNumber: number | string | BN
     ): NonPayableTransactionObject<string>;
+
+    votePowerOfAtIgnoringRevocation(
+      _owner: string,
+      _blockNumber: number | string | BN
+    ): NonPayableTransactionObject<string>;
+
+    vpContractInitialized(): NonPayableTransactionObject<boolean>;
 
     withdraw(amount: number | string | BN): NonPayableTransactionObject<void>;
 

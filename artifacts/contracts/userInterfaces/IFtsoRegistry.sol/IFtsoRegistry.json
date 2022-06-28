@@ -1,0 +1,270 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IFtsoRegistry",
+  "sourceName": "contracts/userInterfaces/IFtsoRegistry.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        }
+      ],
+      "name": "getCurrentPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_timestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getCurrentPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_timestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getFtso",
+      "outputs": [
+        {
+          "internalType": "contract IIFtso",
+          "name": "_activeFtsoAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        }
+      ],
+      "name": "getFtsoBySymbol",
+      "outputs": [
+        {
+          "internalType": "contract IIFtso",
+          "name": "_activeFtsoAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        }
+      ],
+      "name": "getFtsoIndex",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_assetIndex",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getFtsoSymbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_indices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getFtsos",
+      "outputs": [
+        {
+          "internalType": "contract IFtsoGenesis[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedFtsos",
+      "outputs": [
+        {
+          "internalType": "contract IIFtso[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedIndices",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_supportedIndices",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedIndicesAndFtsos",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_supportedIndices",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "contract IIFtso[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedIndicesAndSymbols",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_supportedIndices",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "_supportedSymbols",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedIndicesSymbolsAndFtsos",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_supportedIndices",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "_supportedSymbols",
+          "type": "string[]"
+        },
+        {
+          "internalType": "contract IIFtso[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedSymbols",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "_supportedSymbols",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSupportedSymbolsAndFtsos",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "_supportedSymbols",
+          "type": "string[]"
+        },
+        {
+          "internalType": "contract IIFtso[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

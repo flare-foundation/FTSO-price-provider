@@ -1,0 +1,36 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IIInflationSharingPercentageProvider",
+  "sourceName": "contracts/inflation/interface/IIInflationSharingPercentageProvider.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getSharingPercentages",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "contract IIInflationReceiver",
+              "name": "inflationReceiver",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "percentBips",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct SharingPercentage[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

@@ -1,0 +1,161 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IVoterWhitelister",
+  "sourceName": "contracts/userInterfaces/IVoterWhitelister.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "voter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "VoterRemovedFromWhitelist",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "voter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "VoterWhitelisted",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "defaultMaxVotersForFtso",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getFtsoWhitelistedPriceProviders",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        }
+      ],
+      "name": "getFtsoWhitelistedPriceProvidersBySymbol",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "maxVotersForFtso",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_voter",
+          "type": "address"
+        }
+      ],
+      "name": "requestFullVoterWhitelisting",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_supportedIndices",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bool[]",
+          "name": "_success",
+          "type": "bool[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_voter",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "requestWhitelistingVoter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

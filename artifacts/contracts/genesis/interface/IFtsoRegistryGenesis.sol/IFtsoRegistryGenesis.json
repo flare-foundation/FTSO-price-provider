@@ -1,0 +1,30 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IFtsoRegistryGenesis",
+  "sourceName": "contracts/genesis/interface/IFtsoRegistryGenesis.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_indices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getFtsos",
+      "outputs": [
+        {
+          "internalType": "contract IFtsoGenesis[]",
+          "name": "_ftsos",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

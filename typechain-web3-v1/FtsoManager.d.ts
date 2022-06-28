@@ -103,6 +103,10 @@ export type RewardEpochFinalized = ContractEventLog<{
   0: string;
   1: string;
 }>;
+export type UpdatingActiveValidatorsTriggerFailed = ContractEventLog<{
+  rewardEpoch: string;
+  0: string;
+}>;
 
 export interface FtsoManager extends BaseContract {
   constructor(
@@ -129,6 +133,8 @@ export interface FtsoManager extends BaseContract {
 
     claimGovernance(): NonPayableTransactionObject<void>;
 
+    cleanupBlockNumberManager(): NonPayableTransactionObject<string>;
+
     currentRewardEpochEnds(): NonPayableTransactionObject<string>;
 
     daemonize(): NonPayableTransactionObject<boolean>;
@@ -144,9 +150,9 @@ export interface FtsoManager extends BaseContract {
 
     flareDaemon(): NonPayableTransactionObject<string>;
 
-    getAddressUpdater(): NonPayableTransactionObject<string>;
+    ftsoRegistry(): NonPayableTransactionObject<string>;
 
-    getCleanupBlockNumberManager(): NonPayableTransactionObject<string>;
+    getAddressUpdater(): NonPayableTransactionObject<string>;
 
     getContractName(): NonPayableTransactionObject<string>;
 
@@ -175,10 +181,6 @@ export interface FtsoManager extends BaseContract {
       1: string[];
       2: boolean[];
     }>;
-
-    getFtsoRegistry(): NonPayableTransactionObject<string>;
-
-    getFtsoRewardManager(): NonPayableTransactionObject<string>;
 
     getFtsos(): NonPayableTransactionObject<string[]>;
 
@@ -223,6 +225,8 @@ export interface FtsoManager extends BaseContract {
       2: string;
     }>;
 
+    getPriceSubmitter(): NonPayableTransactionObject<string>;
+
     getRewardEpochConfiguration(): NonPayableTransactionObject<{
       _firstRewardEpochStartTs: string;
       _rewardEpochDurationSeconds: string;
@@ -240,11 +244,7 @@ export interface FtsoManager extends BaseContract {
       _rewardEpoch: number | string | BN
     ): NonPayableTransactionObject<string>;
 
-    getSupply(): NonPayableTransactionObject<string>;
-
     getVotePowerIntervalFraction(): NonPayableTransactionObject<string>;
-
-    getVoterWhitelister(): NonPayableTransactionObject<string>;
 
     governance(): NonPayableTransactionObject<string>;
 
@@ -277,6 +277,23 @@ export interface FtsoManager extends BaseContract {
       _copyCurrentPrice: boolean,
       _copyAssetOrAssetFtsos: boolean
     ): NonPayableTransactionObject<void>;
+
+    rewardEpochDurationSeconds(): NonPayableTransactionObject<string>;
+
+    rewardEpochs(
+      _rewardEpochId: number | string | BN
+    ): NonPayableTransactionObject<{
+      _votepowerBlock: string;
+      _startBlock: string;
+      _startTimestamp: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+
+    rewardEpochsStartTs(): NonPayableTransactionObject<string>;
+
+    rewardManager(): NonPayableTransactionObject<string>;
 
     setFallbackMode(_fallbackMode: boolean): NonPayableTransactionObject<void>;
 
@@ -316,9 +333,34 @@ export interface FtsoManager extends BaseContract {
       _rewardEpochDurationSeconds: number | string | BN
     ): NonPayableTransactionObject<void>;
 
+    setUpdateOnRewardEpochSwitchover(
+      _updateValidators: string
+    ): NonPayableTransactionObject<void>;
+
     setVotePowerIntervalFraction(
       _votePowerIntervalFraction: number | string | BN
     ): NonPayableTransactionObject<void>;
+
+    settings(): NonPayableTransactionObject<{
+      maxVotePowerNatThresholdFraction: string;
+      maxVotePowerAssetThresholdFraction: string;
+      lowAssetUSDThreshold: string;
+      highAssetUSDThreshold: string;
+      highAssetTurnoutThresholdBIPS: string;
+      lowNatTurnoutThresholdBIPS: string;
+      rewardExpiryOffsetSeconds: string;
+      changed: boolean;
+      initialized: boolean;
+      0: string;
+      1: string;
+      2: string;
+      3: string;
+      4: string;
+      5: string;
+      6: string;
+      7: boolean;
+      8: boolean;
+    }>;
 
     showLastRevertedError(): NonPayableTransactionObject<{
       _lastErrorBlock: string[];
@@ -349,6 +391,8 @@ export interface FtsoManager extends BaseContract {
       4: string;
     }>;
 
+    supply(): NonPayableTransactionObject<string>;
+
     switchToFallbackMode(): NonPayableTransactionObject<boolean>;
 
     transferGovernance(_governance: string): NonPayableTransactionObject<void>;
@@ -357,6 +401,10 @@ export interface FtsoManager extends BaseContract {
       _contractNameHashes: (string | number[])[],
       _contractAddresses: string[]
     ): NonPayableTransactionObject<void>;
+
+    updateOnRewardEpochSwitchover(): NonPayableTransactionObject<string>;
+
+    voterWhitelister(): NonPayableTransactionObject<string>;
   };
   events: {
     AccruingUnearnedRewardsFailed(
@@ -456,6 +504,14 @@ export interface FtsoManager extends BaseContract {
     RewardEpochFinalized(
       options?: EventOptions,
       cb?: Callback<RewardEpochFinalized>
+    ): EventEmitter;
+
+    UpdatingActiveValidatorsTriggerFailed(
+      cb?: Callback<UpdatingActiveValidatorsTriggerFailed>
+    ): EventEmitter;
+    UpdatingActiveValidatorsTriggerFailed(
+      options?: EventOptions,
+      cb?: Callback<UpdatingActiveValidatorsTriggerFailed>
     ): EventEmitter;
 
     allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
@@ -585,5 +641,15 @@ export interface FtsoManager extends BaseContract {
     event: "RewardEpochFinalized",
     options: EventOptions,
     cb: Callback<RewardEpochFinalized>
+  ): void;
+
+  once(
+    event: "UpdatingActiveValidatorsTriggerFailed",
+    cb: Callback<UpdatingActiveValidatorsTriggerFailed>
+  ): void;
+  once(
+    event: "UpdatingActiveValidatorsTriggerFailed",
+    options: EventOptions,
+    cb: Callback<UpdatingActiveValidatorsTriggerFailed>
   ): void;
 }

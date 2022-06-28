@@ -1,0 +1,78 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "UnearnedRewardBurner",
+  "sourceName": "contracts/tokenPools/implementation/UnearnedRewardBurner.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_burnAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address payable",
+          "name": "burnAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "burnedWei",
+          "type": "uint256"
+        }
+      ],
+      "name": "Burned",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountWei",
+          "type": "uint256"
+        }
+      ],
+      "name": "Received",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "burnAddress",
+      "outputs": [
+        {
+          "internalType": "address payable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "die",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b506040516101b23803806101b28339818101604052602081101561003357600080fd5b5051600080546001600160a01b039092166001600160a01b031990921691909117905561014d806100656000396000f3fe60806040526004361061002d5760003560e01c806335f469941461006c57806370d5ae051461008357610067565b36610067576040805134815290517fa8142743f8f70a4c26f3691cf4ed59718381fb2f18070ec52be1f1022d8555579181900360200190a1005b600080fd5b34801561007857600080fd5b506100816100b4565b005b34801561008f57600080fd5b50610098610108565b604080516001600160a01b039092168252519081900360200190f35b600054604080516001600160a01b03909216825247602083015280517f696de425f79f4a40bc6d2122ca50507f0efbeabbff86a84871b7196ab8ea8df79281900390910190a16000546001600160a01b0316ff5b6000546001600160a01b03168156fea264697066735822122029f1ea2f5b27d6f78e7c59ddc501185c6eac13e078de5689899f05c370c6d8e564736f6c63430007060033",
+  "deployedBytecode": "0x60806040526004361061002d5760003560e01c806335f469941461006c57806370d5ae051461008357610067565b36610067576040805134815290517fa8142743f8f70a4c26f3691cf4ed59718381fb2f18070ec52be1f1022d8555579181900360200190a1005b600080fd5b34801561007857600080fd5b506100816100b4565b005b34801561008f57600080fd5b50610098610108565b604080516001600160a01b039092168252519081900360200190f35b600054604080516001600160a01b03909216825247602083015280517f696de425f79f4a40bc6d2122ca50507f0efbeabbff86a84871b7196ab8ea8df79281900390910190a16000546001600160a01b0316ff5b6000546001600160a01b03168156fea264697066735822122029f1ea2f5b27d6f78e7c59ddc501185c6eac13e078de5689899f05c370c6d8e564736f6c63430007060033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

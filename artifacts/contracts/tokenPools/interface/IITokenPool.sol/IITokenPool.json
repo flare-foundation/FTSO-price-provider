@@ -1,0 +1,34 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IITokenPool",
+  "sourceName": "contracts/tokenPools/interface/IITokenPool.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getTokenPoolSupplyData",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_lockedFundsWei",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_totalInflationAuthorizedWei",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_totalClaimedWei",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

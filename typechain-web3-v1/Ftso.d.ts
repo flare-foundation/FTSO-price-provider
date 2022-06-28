@@ -156,6 +156,26 @@ export interface Ftso extends BaseContract {
       1: string;
     }>;
 
+    getCurrentPriceDetails(): NonPayableTransactionObject<{
+      _price: string;
+      _priceTimestamp: string;
+      _priceFinalizationType: string;
+      _lastPriceEpochFinalizationTimestamp: string;
+      _lastPriceEpochFinalizationType: string;
+      0: string;
+      1: string;
+      2: string;
+      3: string;
+      4: string;
+    }>;
+
+    getCurrentPriceFromTrustedProviders(): NonPayableTransactionObject<{
+      _price: string;
+      _timestamp: string;
+      0: string;
+      1: string;
+    }>;
+
     getCurrentRandom(): NonPayableTransactionObject<string>;
 
     getEpochId(

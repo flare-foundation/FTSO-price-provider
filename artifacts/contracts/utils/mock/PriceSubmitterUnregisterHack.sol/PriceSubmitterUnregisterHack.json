@@ -1,0 +1,48 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "PriceSubmitterUnregisterHack",
+  "sourceName": "contracts/utils/mock/PriceSubmitterUnregisterHack.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract PriceSubmitter",
+          "name": "_priceSubmitter",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_ftsoIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeFtso",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_ftsoRegistry",
+          "type": "address"
+        }
+      ],
+      "name": "setFtsoRegistry",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b506040516101353803806101358339818101604052602081101561003357600080fd5b5051600280546001600160a01b0319166001600160a01b0390921691909117905560d3806100626000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80635fc56014146037578063d873617114605c575b600080fd5b605a60048036036020811015604b57600080fd5b50356001600160a01b03166076565b005b605a60048036036020811015607057600080fd5b50356098565b600080546001600160a01b0319166001600160a01b0392909216919091179055565b60015556fea26469706673582212201153bd43c8864a0698255857bf45e31a04aa0ca9f72267fac9fccbb23be03d3364736f6c63430007060033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80635fc56014146037578063d873617114605c575b600080fd5b605a60048036036020811015604b57600080fd5b50356001600160a01b03166076565b005b605a60048036036020811015607057600080fd5b50356098565b600080546001600160a01b0319166001600160a01b0392909216919091179055565b60015556fea26469706673582212201153bd43c8864a0698255857bf45e31a04aa0ca9f72267fac9fccbb23be03d3364736f6c63430007060033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
