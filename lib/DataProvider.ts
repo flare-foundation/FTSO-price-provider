@@ -28,7 +28,7 @@ let args = yargs
         alias: 'c',
         type: 'string',
         description: 'Path to config json file',
-        default: './config.json',
+        default: './config/config.json',
         demand: true
     }).argv;
 
