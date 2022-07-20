@@ -63,12 +63,6 @@
             "priceProviderParams": ["LTC/USD", 1.0, [["coinbasepro", "LTC/USD"], ["ftx", "LTC/USD"], ["bitmex", "LTC/USD"], ["bitfinex", "LTC/USD"], ["crypto", "LTC/USDT"], ["binance", "LTC/USDT"], ["okex", "LTC/USDT"], ["mexc", "LTC/USDT"], ["bibox", "LTC/USDT"], ["huobi", "LTC/USDT"], ["zb", "LTC/USDT"], ["bitrue", "LTC/USDT"], ["zt", "LTC/USDT"]], "avg"]
         },
         {
-            "symbol": "FLR",
-            "decimals": 5,
-            "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["SGB/USD", 1.0, [["bitfinex", "SGB/USD"], ["kraken", "SGB/USD"], ["zb", "SGB/USDT"], ["mexc", "SGB/USDT"], ["digifinex", "SGB/USDT"], ["coinex", "SGB/USDT"], ["gateio", "SGB/USDT"], ["bitrue", "SGB/USDT"]], "avg"]
-        },
-        {
             "symbol": "XLM",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
