@@ -1,6 +1,8 @@
 # *Flare Network* price provider
 
-This is the version for the Flare network. See [`main`](https://github.com/flare-foundation/FTSO-price-provider) branch for the version for Songbird network.
+___
+**Note:** This is the version for the Flare network. See [`main`](https://github.com/flare-foundation/FTSO-price-provider) branch for the version for the Songbird network.
+___
 
 The repository contains an example of *Flare Network* price provider implementation. 
 
