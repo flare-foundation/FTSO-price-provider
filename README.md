@@ -1,8 +1,9 @@
 # *Flare Network* price provider
 
-- Songbird version: `main` branch
-- Flare version: [`flare`](https://github.com/flare-foundation/FTSO-price-provider/tree/flare) branch
-
+---
+- **Songbird** version: `main` branch
+- **Flare** version: [`flare`](https://github.com/flare-foundation/FTSO-price-provider/tree/flare) branch
+---
 The repository contains an example of *Flare Network* price provider implementation. 
 
 *Flare Networks* encourages data providers to develop their own custom data provider code, mainly due to the competitive nature of price provision in pursuit of Flare Time Series Oracle (FTSO) rewards.  
