@@ -62,7 +62,17 @@ To learn more about the internal workings of `PriceSubmitter` and `FTSO`-s, we e
 
 ## Configuration
 
-Data provider is configured by a JSON configuration file. In addition, certain parameters can be overridden through environment variable definition in .env file and the private key can be obtained through Google Cloud Secret Manager. The typical configuration looks like this:
+Data provider is configured by a JSON configuration file. In addition, certain parameters(`rpcUrl` and `accountPrivateKey`) can be overridden through environment variables(`RPC_URL` and `PROJECT_SECRET`) definition in .env file.
+
+The private key can be obtained through 3rd party secret manager such as Google Cloud Secret Manager and Hashicorp Vault. 
+- If `PROJECT_SECRET` starts with `gcp://`, it tries to fetch from GCP Secret manager.
+- If `PROJECT_SECRET` starts with `vault://`, it tries to fetch from HCP Vault. You can configure HCP Vault information using these env vars:
+    - `VAULT_ROLE_ID` and `VAULT_SECRET_ID`: To login Vault with app role
+    - `VAULT_TOKEN`: To login vault with a token
+    - `VAULT_URL`: Vault server url (default: `http://localhost:8200/v1`)
+    - `VAULT_NAMESPACE`: Vault namespace (default: `admin`)
+
+The typical configuration looks like this:
 
 ```
 {

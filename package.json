@@ -9,9 +9,10 @@
     "@types/glob": "7.1.4",
     "ccxt": "1.50.74",
     "ccxws": "0.43.1",
-    "ethers": "5.1.4",
     "dotenv": "10.0.0",
+    "ethers": "5.1.4",
     "glob": "7.1.7",
+    "hashi-vault-js": "git+https://github.com/josedev-union/hashi-vault-js",
     "random-number-csprng": "1.0.2",
     "ts-node": "9.1.1",
     "typescript": "4.4.2",
@@ -26,7 +27,7 @@
     "sync": "yarn artifacts && yarn typechain-web3-v1",
     "build": "yarn tsc",
     "docker-build": "bash scripts/docker-build.sh",
-    "docker-deploy": "bash scripts/docker-deploy.sh"  
+    "docker-deploy": "bash scripts/docker-deploy.sh"
   },
   "devDependencies": {
     "@typechain/web3-v1": "3.1.0",
