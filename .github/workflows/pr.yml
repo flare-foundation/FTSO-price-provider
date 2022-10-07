@@ -1,0 +1,22 @@
+name: Main
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - uses: RafikFarhad/push-to-gcr-github-action@v4.1
+      with:
+        gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+        registry: us.gcr.io
+        project_id: pango-prod
+        image_name: ftso-price-provider
+        image_tag: dev

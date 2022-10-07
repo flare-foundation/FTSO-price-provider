@@ -1,0 +1,43 @@
+name: Main
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build image
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Get future tag
+      id: generate_tag
+      uses: anothrNick/github-tag-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        DEFAULT_BUMP: patch
+        RELEASE_BRANCHES: main
+        DRY_RUN: true
+
+    - uses: RafikFarhad/push-to-gcr-github-action@v4.1
+      with:
+        gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+        registry: us.gcr.io
+        project_id: pango-prod
+        image_name: ftso-price-provider
+        image_tag: ${{ steps.generate_tag.outputs.new_tag }}
+
+    - name: Generate Tag
+      uses: anothrNick/github-tag-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        DEFAULT_BUMP: patch
+        RELEASE_BRANCHES: main
+        DRY_RUN: false
