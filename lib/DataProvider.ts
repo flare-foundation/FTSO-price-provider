@@ -9,7 +9,7 @@ import { DataProviderConfiguration } from './Configuration';
 import { DataProviderData } from './DataProviderData';
 import { DotEnvExt } from './DotEnvExt';
 import { EpochSettings } from './EpochSettings';
-import { fetchSecret } from './GoogleSecret';
+import { fetchSecret } from './SecretProvider';
 import { PriceInfo } from './PriceInfo';
 import * as impl from './PriceProviderImpl';
 import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
@@ -368,24 +368,26 @@ class DataProvider {
         let accountPrivateKey: string = ""
 
         this.logger.info(`Starting Flare Price Provider v${version}`)
-
-        if ( process.env.PROJECT_SECRET===undefined ) {
-            this.logger.info(`   * account read from .env`)
-            accountPrivateKey = (conf.accountPrivateKey as string)
-        } else if (process.env.PROJECT_SECRET!==undefined) {
-            this.logger.info(`   * account read from secret '${process.env.PROJECT_SECRET}'`)
-            accountPrivateKey = (await fetchSecret(process.env.PROJECT_SECRET as string) as string)
-        } else {
-            this.logger.info(`Starting Flare Price Provider  v${version} [developer mode]`)
-            this.logger.info(`   * account read from config`)
-
-            accountPrivateKey = (conf.accountPrivateKey as string)
+        try {
+            if ( process.env.PROJECT_SECRET===undefined ) {
+                this.logger.info(`   * account read from config`)
+                accountPrivateKey = (conf.accountPrivateKey as string)
+            } else if (process.env.PROJECT_SECRET!==undefined) {
+                this.logger.info(`   * account read from .env '${process.env.PROJECT_SECRET}'`)
+                accountPrivateKey = (await fetchSecret(process.env.PROJECT_SECRET as string) as string)
+            } else {
+                this.logger.info(`Starting Flare Price Provider  v${version} [developer mode]`)
+                this.logger.info(`   * account read from config`)
+                accountPrivateKey = (conf.accountPrivateKey as string)
+            }
+        } catch(error:any) {
+            this.logger.error(`fetchSecret() | ${error}`);
+            return; // No point in continuing without private key
         }
 
         // rpcUrl from conf
         if (process.env.RPC_URL !== undefined) {
             conf.rpcUrl = process.env.RPC_URL
-
             // rpcUrl from .env if it exsists
             this.logger.info(`   * rpcUrl from .env '${conf.rpcUrl}'`)
         }
