@@ -11,7 +11,6 @@ export async function fetchSecret(name: string) {
         // vault
         let secret_name = name.replace(/^(vault:\/\/)/,"");
         let secret = await fetchVaultSecret(secret_name);
-        console.log(secret);
         return secret;
     }
     return name
