@@ -1,4 +1,5 @@
 import { BigNumber, Contract } from 'ethers';
+import Koa from 'koa'
 import * as fs from 'fs';
 import Web3 from 'web3';
 import { FtsoManager } from '../typechain-web3-v1/FtsoManager';
@@ -481,3 +482,11 @@ class DataProvider {
 const dataProvider = new DataProvider(conf);
 
 dataProvider.runDataProvider();
+
+const app = new Koa();
+
+app.use(async ctx => {
+  ctx.body = 'Healthy!';
+});
+
+app.listen(3000);
