@@ -13,7 +13,7 @@
     "dotenv": "10.0.0",
     "ethers": "5.1.4",
     "glob": "7.1.7",
-    "hashi-vault-js": "git+https://github.com/josedev-union/hashi-vault-js",
+    "hashi-vault-js": "git+https://github.com/josedev-union/hashi-vault-js.git",
     "koa": "^2.13.4",
     "random-number-csprng": "1.0.2",
     "ts-node": "9.1.1",

@@ -4,7 +4,7 @@ ENV NODE_ENV=production
 WORKDIR /usr/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 
-RUN npm install
+#RUN npm install
 
 COPY . .
 
