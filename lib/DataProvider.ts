@@ -87,9 +87,6 @@ class DataProvider {
             return dpd;
         })
 
-        this.provider = getProvider(conf.rpcUrl);
-
-
         if (this.data.length == 0) {
             throw Error("No price providers in configuration!");
         }
@@ -393,6 +390,7 @@ class DataProvider {
             this.logger.info(`   * rpcUrl from conf '${conf.rpcUrl}'`)
         }
 
+        this.provider = getProvider(conf.rpcUrl);
         this.web3 = getWeb3(conf.rpcUrl);
         this.waitFinalize3 = waitFinalize3Factory(this.web3);
         this.account = getWeb3Wallet(this.web3, accountPrivateKey);
