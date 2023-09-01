@@ -924,10 +924,12 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-ccxt@1.50.74:
-  version "1.50.74"
-  resolved "https://registry.yarnpkg.com/ccxt/-/ccxt-1.50.74.tgz#aa81f65a4d5e5d07af0816250ad86f823786e5a7"
-  integrity sha512-Zksh5xs9umrlobjS0Fmgny16x0D7xxSPvzMoBnd4f6C2aonYSMJY6M5JGOB/KUVH6ooR5YaxDhRNsyco403X2g==
+ccxt@2.8.47:
+  version "2.8.47"
+  resolved "https://registry.yarnpkg.com/ccxt/-/ccxt-2.8.47.tgz#7a772e7883b448a9e48354f7c7d4829a7bc408c3"
+  integrity sha512-I2wG0t32ylWK7hrmWRET4iPzIbI0vhIS/ciR0GPl4IKaQYI7441v5BTfagv0GAAjZMgIKVvrVQs+yYaC8MqvKA==
+  dependencies:
+    ws "^8.8.1"
 
 "ccxws@git+https://github.com/flare-foundation/ccxws.git#0.43.29":
   version "0.43.29"
@@ -4120,6 +4122,11 @@ ws@^7.3.0:
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.4.tgz#56bfa20b167427e138a7795de68d134fe92e21f9"
   integrity sha512-zP9z6GXm6zC27YtspwH99T3qTG7bBFv2VIkeHstMLrLlDJuzA7tQ5ls3OJ1hOGGCzTQPniNJoHXIAOS0Jljohg==
+
+ws@^8.8.1:
+  version "8.13.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.13.0.tgz#9a9fb92f93cf41512a0735c8f4dd09b8a1211cd0"
+  integrity sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==
 
 xhr-request-promise@^0.1.2:
   version "0.1.3"
