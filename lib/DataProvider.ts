@@ -516,11 +516,6 @@ class DataProvider {
             this.logger.error(`getPriceEpochConfiguration() | ${err}`);
         }
 
-        this.logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        this.logger.info("symbol2dpd:", Array(this.symbol2dpd.entries()));
-        this.logger.info("symbol2dpd:", Array(this.symbol2dpd.size));
-        this.logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-
         this.setupEvents();
     }
 }
