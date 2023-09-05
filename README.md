@@ -98,7 +98,7 @@ Data provider is configured by a JSON configuration file. In addition, certain p
 - `whitelist` - Defines whether whitelist procedure should be executed at the beginning of the run. Usually should be set to true at least for the first run.
 - `trusted` - Defines whether the address of the data provider is trusted. Trusted providers are 
 - `gasPrice` - Gas price for transactions sent (submits and reveals). 
-
+- `symbolPrefix` - Prefix for symbols of currencies. Use `test` for testnets and empty string for mainnet.
 - `priceProviderList` - A list of price provider data. Each object has the following parameters:
   - `symbol` - FAsset which price will be submitted/revealed (eg. FXRP, FLTC, etc.)
   - `decimals` - Number of decimals (default: 5).
@@ -163,3 +163,9 @@ To claim rewards for certain reward epochs run from root: `./scripts/run-command
 ## SetFee
 
 To set fee percents run from root: `./scripts/run-command.sh SetFee <fee>` where `<fee>` must be a number between 0 and 100 and represents fee percentage (e.g. 100 for 100% fee) - this parameter is mandatory.
+
+
+# Testnets
+
+The submission process for live net and testnets is the same. The only difference is the configuration file. For testnets (coston2 for flare), you should change the rpc endpoint, private key (for security reasons) and set prefix to `test` (see the full information on config above).
+
