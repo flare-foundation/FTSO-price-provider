@@ -169,3 +169,4 @@ To set fee percents run from root: `./scripts/run-command.sh SetFee <fee>` where
 
 The submission process for live net and testnets is the same. The only difference is the configuration file. For testnets (coston2 for flare), you should change the rpc endpoint, private key (for security reasons) and set prefix to `test` (see the full information on config above).
 
+*WARNING:* The configuration file does not include the pricing information for native coin (FLR or C2FLR).
