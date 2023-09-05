@@ -7,6 +7,7 @@
     "whitelist": false,
     "trusted": true,
     "gasPrice": "225000000000",
+    "symbolPrefix": "test",
     "priceProviderList": [
         {
             "symbol": "ADA",

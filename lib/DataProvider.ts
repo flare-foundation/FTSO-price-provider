@@ -15,7 +15,7 @@ import { PriceInfo } from './PriceInfo';
 import * as impl from './PriceProviderImpl';
 import { bigNumberToMillis, getContract, getLogger, getProvider, getWeb3, getWeb3Contract, getWeb3Wallet, priceHash, waitFinalize3Factory } from './utils';
 
-let ccxws:any = require('ccxws');
+let ccxws: any = require('ccxws');
 let randomNumber = require("random-number-csprng");
 let yargs = require("yargs");
 
@@ -77,26 +77,26 @@ class DataProvider {
 
     constructor(conf: any) {
         // we need this provider for usdt/usd pair
-        let n:number = conf.priceProviderList.length;
-        let exchanges:any[] = [];
-        for(let ex of ['coinbasepro', 'ftx', 'kraken']) {
-            exchanges.push( { ex, market: 'USDT/USD', client: this.getWsClient(ex, 3*n) } );
+        let n: number = conf.priceProviderList.length;
+        let exchanges: any[] = [];
+        for (let ex of ['coinbasepro', 'kraken']) {
+            exchanges.push({ ex, market: 'USDT/USD', client: this.getWsClient(ex, 3 * n) });
         }
-        let usdtUsdProvider:IPriceProvider = new impl.WsLimitedPriceProvider('USDT/USD', 1.0, exchanges, 'avg');
+        let usdtUsdProvider: IPriceProvider = new impl.WsLimitedPriceProvider('USDT/USD', 1.0, exchanges, 'avg');
         usdtUsdProvider.setLogger(this.logger);
         usdtUsdProvider.init();
 
         // providers from config
         this.data = conf.priceProviderList.map((ppc: any, index: number) => {
-            ppc.priceProviderParams[2] = ppc.priceProviderParams[2].map( (arr:any) => {
-                let ex:string = arr[0];
+            ppc.priceProviderParams[2] = ppc.priceProviderParams[2].map((arr: any) => {
+                let ex: string = arr[0];
                 return {
                     ex,
                     market: arr[1],
-                    client: this.getWsClient(ex, 2*n)
+                    client: this.getWsClient(ex, 2 * n)
                 };
             });
-            let priceProvider:IPriceProvider = new (impl as any)[ppc.priceProviderClass](...ppc.priceProviderParams);
+            let priceProvider: IPriceProvider = new (impl as any)[ppc.priceProviderClass](...ppc.priceProviderParams);
             priceProvider.setLogger(this.logger);
             priceProvider.setUsdtUsdProvider(usdtUsdProvider);
             priceProvider.init();
@@ -107,6 +107,7 @@ class DataProvider {
                 priceProvider,
                 label: ppc.priceProviderClass + "(" + ppc.symbol + "/USD)"
             } as DataProviderData;
+
             this.symbol2dpd.set(ppc.symbol, dpd);
             return dpd;
         })
@@ -126,10 +127,10 @@ class DataProvider {
 
     }
 
-    getWsClient(ex:string, n:number): void {
-        if(!this.ex2client[ex]) {
-            let self:any = this;
-            let client:any = new (ccxws as any)[ex]();
+    getWsClient(ex: string, n: number): void {
+        if (!this.ex2client[ex]) {
+            let self: any = this;
+            let client: any = new (ccxws as any)[ex]();
             client.setMaxListeners(n);
             client.on("error", (err: any) => self.logger.error(`Error on exchange ${ex}: ${err}`));
             client.on("reconnecting", () => self.logger.info(`Reconnecting to ${ex}...`));
@@ -202,7 +203,7 @@ class DataProvider {
     }
 
     isSymbolActive(bitmask: number, symbol: string) {
-        let index = this.symbol2Index.get(symbol);
+        let index = this.symbol2Index.get(conf.symbolPrefix + symbol);
         return index >= 0 && ((bitmask >> index) % 2) == 1;
     }
 
@@ -212,14 +213,14 @@ class DataProvider {
         let realEpochData = await this.ftsoManagerWeb3Contract.methods.getCurrentPriceEpochData().call()
         this.logger.info(`Internal epoch id: ${epochId}, real ${realEpochData._priceEpochId}`)
 
-        let index2price:Map<number,Number> = new Map();
+        let index2price: Map<number, Number> = new Map();
         let random = this.getRandom();
         this.currentBitmask = await this.priceSubmitterWeb3Contract.methods.voterWhitelistBitmap(this.account.address).call() as any;
         this.logger.info(`Current bitmask: ${this.currentBitmask.toString(2)}`);
-        
+
         for (let p of lst) {
             p = p as DataProviderData;
-            if (!this.symbol2Index.has(p.symbol)) {
+            if (!this.symbol2Index.has(conf.symbolPrefix + p.symbol)) {
                 this.logger.info(`Skipping submit of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${this.supportedSymbols()}.`);
                 continue;
             }
@@ -231,16 +232,16 @@ class DataProvider {
             let price = await p.priceProvider.getPrice();
             if (price) {
                 let preparedPrice = this.preparePrice(price, p.decimals);
-                index2price.set( Number(this.symbol2Index.get(p.symbol)), preparedPrice);
+                index2price.set(Number(this.symbol2Index.get(conf.symbolPrefix + p.symbol)), preparedPrice);
                 this.logger.info(`${p.label} | Submitting price: ${(preparedPrice / 10 ** p.decimals).toFixed(p.decimals)} $ for ${epochId}`);
                 this.symbol2epochId2priceInfo.get(p.symbol)!.set(epochId, new PriceInfo(epochId, preparedPrice, random));
             } else {
                 this.logger.error(`No price for ${p.symbol}`);
             }
         }
-        
-        let ftsoIndices:number[] = [ ...index2price.keys() ].sort( (a:number, b:number) => a-b );
-        let prices:string[] = ftsoIndices.map( (index:number) => index2price.get(index)!.toString() );
+
+        let ftsoIndices: number[] = [...index2price.keys()].sort((a: number, b: number) => a - b);
+        let prices: string[] = ftsoIndices.map((index: number) => index2price.get(index)!.toString());
 
         if (prices.length > 0) {
             this.logger.info(`Ftso indices: ${ftsoIndices.map(x => x.toString()).toString()}`)
@@ -257,27 +258,27 @@ class DataProvider {
 
             // let addresses = [];
             let random = Web3.utils.toBN('0');
-            let index2price:Map<number,Number> = new Map();
-            
+            let index2price: Map<number, Number> = new Map();
+
             for (let p of lst) {
                 p = p as DataProviderData;
-                if (!this.symbol2Index.get(p.symbol)) {
+                if (!this.symbol2Index.get(conf.symbolPrefix + p.symbol)) {
                     this.logger.info(`Skipping reveal of ${p.symbol} since it is not supported (no FTSO found). Supported symbols are: ${this.supportedSymbols()}.`);
                     continue;
                 }
-                
+
                 let priceInfo = this.symbol2epochId2priceInfo.get(p.symbol)!.get(epochIdStr);
-                
+
                 if (priceInfo) {
                     this.logger.info(`${p.label} | Revealing price for ${epochIdStr}`);
                     priceInfo.moveToNextStatus();
-                    index2price.set( Number(this.symbol2Index.get(p.symbol)), priceInfo.priceSubmitted);
+                    index2price.set(Number(this.symbol2Index.get(conf.symbolPrefix + p.symbol)), priceInfo.priceSubmitted);
                     random = priceInfo.random;
                 }
             }
-            
-            let ftsoIndices:number[] = [ ...index2price.keys() ].sort( (a:number, b:number) => a-b );
-            let prices:string[] = ftsoIndices.map( (index:number) => index2price.get(index)!.toString() );
+
+            let ftsoIndices: number[] = [...index2price.keys()].sort((a: number, b: number) => a - b);
+            let prices: string[] = ftsoIndices.map((index: number) => index2price.get(index)!.toString());
 
             if (prices.length > 0) {
                 var fnToEncode = this.priceSubmitterWeb3Contract.methods.revealPrices(epochIdStr, ftsoIndices, prices, random);
@@ -358,9 +359,8 @@ class DataProvider {
             let i = 0;
             for (let ftso of ftsos) {
                 let symbol = this.ftso2symbol.get(ftso)!;
-                let p: DataProviderData = this.symbol2dpd.get(symbol)!;
+                let p: DataProviderData = this.symbol2dpd.get(symbol.replace(new RegExp(`^(${conf.symbolPrefix})`), ""))!;
                 let price = prices[i];
-
                 this.logger.info(`${p.label} | Price revealed in epoch ${epochIdStr}: ${(price / 10 ** p.decimals).toFixed(p.decimals)}$.`);
 
                 let priceInfo = this.symbol2epochId2priceInfo.get(symbol)?.get(epochIdStr);
@@ -459,9 +459,8 @@ class DataProvider {
             this.voterWhitelisterContract = await getWeb3Contract(this.web3, voterWhitelisterAddress, "VoterWhitelister");
 
             // if file .whitelisted does not exists then enable whitelisting
-            if( !fs.existsSync(".whitelisted") )
-            {
-                conf.whitelist = true;                
+            if (!fs.existsSync(".whitelisted")) {
+                conf.whitelist = true;
                 this.logger.info(`whitelisting enabled`);
             }
 
@@ -516,6 +515,11 @@ class DataProvider {
         } catch (err: any) {
             this.logger.error(`getPriceEpochConfiguration() | ${err}`);
         }
+
+        this.logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        this.logger.info("symbol2dpd:", Array(this.symbol2dpd.entries()));
+        this.logger.info("symbol2dpd:", Array(this.symbol2dpd.size));
+        this.logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
         this.setupEvents();
     }
