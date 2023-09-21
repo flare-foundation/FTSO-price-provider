@@ -4,13 +4,14 @@ export class DataProviderConfiguration {
     public rpcUrl!: string;
     public priceProviderList:PriceProviderConfiguration[] = [];
     public ftsoManagerContractAddress!: string;
-    public submitOffset:number=60000;   // in millis - tells us how much after start of submit period, we submit the price (e.g. if submitOffset = 30000, then price will be submitted 30s after epoch submit period starts) 
+    public submitOffset:number=60000;   // in millis - tells us how much after start of submit period, we submit the price (e.g. if submitOffset = 30000, then price will be submitted 30s after epoch submit period starts)
     public revealOffset:number=1000;    // in millis - tells us how much after start of reveal period, we reveal the price (e.g. if revealOffset = 10000, then price will be revealed 10s after epoch reveal period starts)
     public gasPrice!: string;
     public whitelist!: boolean;
     public trusted!: boolean;
     public priceSubmitterContractAddress!: string;
     public symbolPrefix!: string;
+    public retryOnFtsoFailureInterval: number = -1;         // in seconds - tells us how often to retry if `getFtsoManager` fails - set to -1 to disable retry
 
     validate() {
         if(!this.accountPrivateKey) {
@@ -31,7 +32,7 @@ export class DataProviderConfiguration {
 export class PriceProviderConfiguration {
 
     public symbol!: string; // Asset name, eg. XRP, DGB, LTC, etc.
-    public decimals:number = 5;  
+    public decimals:number = 5;
     public priceProviderClass!: string; // must implement IPriceProvider (e.g. RandomPriceProvider)
     public priceProviderParams!: any[]; // parameters to send to constructor of price provider class (e.g. ["XRP/USD"])
 

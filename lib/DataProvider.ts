@@ -434,7 +434,25 @@ class DataProvider {
         this.runExecution();
 
         try {
-            let ftsoManagerAddress = await this.priceSubmitterWeb3Contract.methods.getFtsoManager().call();
+            let ftsoManagerAddress: string;
+
+            for (;;) {
+                try {
+                    ftsoManagerAddress = await this.priceSubmitterWeb3Contract.methods.getFtsoManager().call();
+                    // we got the address, so we can exit the loop
+                    break;
+                } catch (err: any) {
+                    if (conf.retryOnFtsoFailureInterval > 0) {
+                        // we wait for a while and try again
+                        this.logger.error(`getFtsoManager() | ${err}`)
+                        this.logger.info(`Retrying in ${conf.retryOnFtsoFailureInterval} seconds...`)
+                        await new Promise((r) => setTimeout(r, conf.retryOnFtsoFailureInterval * 1000));
+                    } else {
+                        // we don't retry and throw the error for the parent catch and to exit the loop
+                        throw err;
+                    }
+                }
+            }
             this.logger.info(`FtsoManager address obtained ${ftsoManagerAddress}`)
             this.ftsoManagerWeb3Contract = await getWeb3Contract(this.web3, ftsoManagerAddress, "FtsoManager");
             this.ftsoManagerContract = await getContract(this.provider, ftsoManagerAddress, "FtsoManager");
