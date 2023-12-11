@@ -73,6 +73,12 @@
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
             "priceProviderParams": ["XRP/USD", 1.0, [["ftx", "XRP/USD"], ["bitfinex", "XRP/USD"], ["bitmex", "XRP/USD"], ["bitstamp", "XRP/USD"], ["kraken", "XRP/USD"], ["binance", "XRP/USDT"], ["okex", "XRP/USDT"], ["bitrue", "XRP/USDT"], ["zb", "XRP/USDT"], ["huobi", "XRP/USDT"], ["mexc", "XRP/USDT"], ["digifinex", "XRP/USDT"], ["crypto", "XRP/USDT"], ["bitforex", "XRP/USDT"], ["bybit", "XRP/USDT"], ["bibox", "XRP/USDT"], ["gateio", "XRP/USDT"], ["lbank", "XRP/USDT"], ["zt", "XRP/USDT"]], "avg"]
+        },
+        {
+            "symbol": "FLR",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["FLR/USD", 1.0, [["kraken", "FLR/USD"], ["bitstamp", "FLR/USD"], ["bitfinex", "FLR/USD"], ["bitfinex", "FLR/USDT"], ["huobi", "FLR/USDT"], ["okex", "FLR/USDT"], ["gateio", "FLR/USD"], ["bybit", "FLR/USDT"], ["lbank", "FLR/USDT"], ["bitrue", "FLR/USDT"], ["digifinex", "FLR/USDT"], ["mexc", "FLR/USDT"], ["zt", "FLR/USDT"]], "avg"]
         }
     ]
 }
