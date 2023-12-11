@@ -10,6 +10,7 @@ export class DataProviderConfiguration {
     public whitelist!: boolean;
     public trusted!: boolean;
     public priceSubmitterContractAddress!: string;
+    public symbolPrefix!: string;
 
     validate() {
         if(!this.accountPrivateKey) {

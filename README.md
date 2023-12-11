@@ -36,7 +36,7 @@ When the reveal epoch ends, all revealed prices are collected and used for the c
 
 There are two types of data providers, ordinary ones and trusted data providers. Trusted data providers are decided by a governance process and do not need to become whitelisted, as they are whitelisted by default. During usual operations of FTSO system, trusted data providers have exactly the same role as ordinary data providers. Only in exceptional situations when FTSO system goes into a special fallback mode these data providers are relied on to provide prices from which average is calculated. Special fallback mode kicks in if too small number of data providers sends their prices (too small in terms of total vote power), or if price changes abruptly, or if it is triggered by governance. In special fallback mode no rewards are distributed to trusted data providers.
 
-All other providers can try to get whitelisted. Whitelisting is a completely decentralized procedure and it is based purely on vote power. It is managed by `VoterWhitelister` contract. Any data provider with `address` can try to whitelist itself for a currency with `index` by calling `VoterWhitelister.requestWhitelistingVoter(address, index)`. If data provider's vote power (= WSGB balance + WSGB delegations) is high enough, it gets whitelisted. For each currency at most 100 whitelisted data providers can exist. A new data provider can get whitelisted only if there are still free empty slots or its vote power is greater than the voting power of some already whitelisted data provider. In this case, the whitelisted data provider with minimal vote power gets removed from the whitelist. This is fully managed by `VoterWhitelister.requestWhitelistingVoter(...)`. At any time, a data provider can try to obtain its whitelisting mask, by calling `PriceSubmitter.voterWhitelistBitmap(address)`. This is a bitmask, where positions of bits correspond to indices of currencies. An index for a supported currency can be obtained on `FtsoRegistry` contract, by calling `FtsoRegistry.getFtsoIndex(symbol)`. Supported symbols list can be obtained by calling `FtsoRegistry.getSupportedSymbols()`.
+All other providers can try to get whitelisted. Whitelisting is a completely decentralized procedure and it is based purely on vote power. It is managed by `VoterWhitelister` contract. Any data provider with `address` can try to whitelist itself for a currency with `index` by calling `VoterWhitelister.requestWhitelistingVoter(address, index)`. If data provider's vote power (= WFLR balance + WFLR delegations) is high enough, it gets whitelisted. For each currency at most 100 whitelisted data providers can exist. A new data provider can get whitelisted only if there are still free empty slots or its vote power is greater than the voting power of some already whitelisted data provider. In this case, the whitelisted data provider with minimal vote power gets removed from the whitelist. This is fully managed by `VoterWhitelister.requestWhitelistingVoter(...)`. At any time, a data provider can try to obtain its whitelisting mask, by calling `PriceSubmitter.voterWhitelistBitmap(address)`. This is a bitmask, where positions of bits correspond to indices of currencies. An index for a supported currency can be obtained on `FtsoRegistry` contract, by calling `FtsoRegistry.getFtsoIndex(symbol)`. Supported symbols list can be obtained by calling `FtsoRegistry.getSupportedSymbols()`.
 
 ### Pricing transactions and priority
 
@@ -98,7 +98,7 @@ Data provider is configured by a JSON configuration file. In addition, certain p
 - `whitelist` - Defines whether whitelist procedure should be executed at the beginning of the run. Usually should be set to true at least for the first run.
 - `trusted` - Defines whether the address of the data provider is trusted. Trusted providers are 
 - `gasPrice` - Gas price for transactions sent (submits and reveals). 
-
+- `symbolPrefix` - Prefix for symbols of currencies. Use `test` for testnets and empty string for mainnet.
 - `priceProviderList` - A list of price provider data. Each object has the following parameters:
   - `symbol` - FAsset which price will be submitted/revealed (eg. FXRP, FLTC, etc.)
   - `decimals` - Number of decimals (default: 5).
@@ -163,3 +163,10 @@ To claim rewards for certain reward epochs run from root: `./scripts/run-command
 ## SetFee
 
 To set fee percents run from root: `./scripts/run-command.sh SetFee <fee>` where `<fee>` must be a number between 0 and 100 and represents fee percentage (e.g. 100 for 100% fee) - this parameter is mandatory.
+
+
+# Testnets
+
+The submission process for live net and testnets is the same. The only difference is the configuration file. For testnets (coston2 for flare), you should change the rpc endpoint, private key (for security reasons) and set prefix to `test` (see the full information on config above).
+
+*WARNING:* The configuration file does not include the pricing information for native coin (FLR or C2FLR).
