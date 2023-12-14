@@ -88,6 +88,8 @@ Data provider is configured by a JSON configuration file. In addition, certain p
 }
 ```
 
+Configuration file parameters are explained below, but for ease you can update the `CMD` in the Dockerfile to use either the Coston2 or the Flare mainnet implementation. If you're running the provider for the first time, make a note of the whitelist configuration parameter which is described below.
+
 ### Explanation of parameters in a configuration file
 
 - `accountPrivateKey` - Private key of your account from which prices will be sent. If you use this the private key will be stored on the file system. Make sure to properly secure the server and in case a cloud based virtual machine is used, that the discs are encrypted.
