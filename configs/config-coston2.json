@@ -1,13 +1,13 @@
 {
     "accountPrivateKey": "",
-    "rpcUrl": "https://songbird-api.flare.network/ext/bc/C/rpc",
+    "rpcUrl": "https://coston2-api.flare.network/ext/bc/C/rpc",
     "priceSubmitterContractAddress": "0x1000000000000000000000000000000000000003",
     "submitOffset": 90000,
     "revealOffset": 3000,
     "whitelist": false,
     "trusted": true,
     "gasPrice": "225000000000",
-    "symbolPrefix": "",
+    "symbolPrefix": "test",
     "priceProviderList": [
         {
             "symbol": "ADA",

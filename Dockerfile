@@ -14,4 +14,4 @@ RUN mkdir logs
 
 EXPOSE 3000
 
-CMD node dist/DataProvider.js -c configs/config.json
+CMD node dist/DataProvider.js -c configs/config-mainnet.json
