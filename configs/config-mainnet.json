@@ -115,7 +115,7 @@
             "symbol": "FLR",
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
-            "priceProviderParams": ["FLR/USD", 1.0, [["kraken", "FLR/USD"], ["bitstamp", "FLR/USD"], ["bitfinex", "FLR/USD"], ["bitfinex", "FLR/USDT"], ["huobi", "FLR/USDT"], ["okex", "FLR/USDT"], ["gateio", "FLR/USD"], ["bybit", "FLR/USDT"], ["lbank", "FLR/USDT"], ["bitrue", "FLR/USDT"], ["digifinex", "FLR/USDT"], ["mexc", "FLR/USDT"], ["zt", "FLR/USDT"]], "avg"]
+            "priceProviderParams": ["FLR/USD", 1.0, [["kraken", "FLR/USD"], ["bitstamp", "FLR/USD"], ["bitfinex", "FLR/USD"], ["gateio", "FLR/USD"]], "avg"]
         }
     ]
 }
