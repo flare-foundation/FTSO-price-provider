@@ -1,6 +1,6 @@
 {
     "accountPrivateKey": "",
-    "rpcUrl": "https://songbird-api.flare.network/ext/bc/C/rpc",
+    "rpcUrl": "https://flare-api.flare.network/ext/bc/C/rpc",
     "priceSubmitterContractAddress": "0x1000000000000000000000000000000000000003",
     "submitOffset": 90000,
     "revealOffset": 3000,
@@ -110,6 +110,12 @@
             "decimals": 5,
             "priceProviderClass": "WsLimitedPriceProvider",
             "priceProviderParams": ["XRP/USD", 1.0, [["bitfinex", "XRP/USD"], ["bitmex", "XRP/USD"], ["bitstamp", "XRP/USD"], ["kraken", "XRP/USD"], ["binance", "XRP/USDT"], ["okex", "XRP/USDT"], ["bitrue", "XRP/USDT"], ["huobi", "XRP/USDT"], ["mexc", "XRP/USDT"], ["digifinex", "XRP/USDT"], ["bitforex", "XRP/USDT"], ["bybit", "XRP/USDT"], ["gateio", "XRP/USDT"], ["lbank", "XRP/USDT"]], "avg"]
+        },
+        {
+            "symbol": "FLR",
+            "decimals": 5,
+            "priceProviderClass": "WsLimitedPriceProvider",
+            "priceProviderParams": ["FLR/USD", 1.0, [["kraken", "FLR/USD"], ["bitstamp", "FLR/USD"], ["bitfinex", "FLR/USD"], ["gateio", "FLR/USD"]], "avg"]
         }
     ]
 }

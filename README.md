@@ -52,9 +52,9 @@ To learn more about the internal workings of `PriceSubmitter` and `FTSO`-s, we e
 
 - Clone this repository.
 - Call `yarn` to install node packages.
-- Set up the correct configuration in `configs/config.json` (See *Configuration* below).
+- Set up the correct configuration in `configs/*.json` (See *Configuration* below).
 - Provide or obtain some vote power to the account from which the data provider will be sending prices. For that SGB coins need to be wrapped to WSGB tokens and either put on the balance of the account or some other account(s) should delegate vote power to that account.
-- Run the data provider by calling `./scripts/run-provider.sh ./configs/config.json`
+- Run the data provider by calling `./scripts/run-provider.sh PATH_TO_CONFIG_FILE` (example config files are `./configs/config-coston2.json` are `./configs/config-mainnet.json`).
 
 ## Configuration
 
@@ -87,6 +87,8 @@ Data provider is configured by a JSON configuration file. In addition, certain p
     ]
 }
 ```
+
+Configuration file parameters are explained below, but for ease you can update the `CMD` in the Dockerfile to use either the Coston2 or the Flare mainnet implementation. If you're running the provider for the first time, make a note of the whitelist configuration parameter which is described below.
 
 ### Explanation of parameters in a configuration file
 
