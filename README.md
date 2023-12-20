@@ -52,9 +52,9 @@ To learn more about the internal workings of `PriceSubmitter` and `FTSO`-s, we e
 
 - Clone this repository.
 - Call `yarn` to install node packages.
-- Set up the correct configuration in `configs/config.json` (See *Configuration* below).
+- Set up the correct configuration in `configs/*.json` (See *Configuration* below).
 - Provide or obtain some vote power to the account from which the data provider will be sending prices. For that SGB coins need to be wrapped to WSGB tokens and either put on the balance of the account or some other account(s) should delegate vote power to that account.
-- Run the data provider by calling `./scripts/run-provider.sh ./configs/config.json`
+- Run the data provider by calling `./scripts/run-provider.sh PATH_TO_CONFIG_FILE` (example config files are `./configs/config-coston2.json` are `./configs/config-mainnet.json`).
 
 ## Configuration
 
