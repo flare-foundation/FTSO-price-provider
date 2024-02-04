@@ -206,9 +206,9 @@ export class WsLimitedPriceProvider implements IPriceProvider {
     async getPrice(): Promise<number> {
         let prices = [];
         if(this._exchanges.length > 0) {
-            let conversionRate:number = await this.getUsdtConversionRate( this._exchanges[0].market );
-            for (let { ex } of this._exchanges) {
+            for (let {ex, market} of this._exchanges) {
                 let priceInfo = this._ex2priceInfo[ex];
+                let conversionRate:number = await this.getUsdtConversionRate( market );
                 // price shall not be older than 3min
                 if (priceInfo && priceInfo.price && priceInfo.priceTime > Date.now() - 1000*60*3) {
                     prices.push(Number(priceInfo.price) * conversionRate);
